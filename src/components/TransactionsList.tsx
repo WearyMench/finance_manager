@@ -317,16 +317,9 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
 
       {/* Filtros y búsqueda */}
       <div className="card animate-stagger-1">
-        <div 
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 'var(--space-4)',
-            alignItems: 'end'
-          }}
-        >
+        <div className="filters-grid">
           {/* Búsqueda */}
-          <div className="form-group" style={{ marginBottom: 0 }}>
+          <div className="form-group search" style={{ marginBottom: 0 }}>
             <label className="form-label">
               <Search size={16} style={{ marginRight: 'var(--space-2)' }} />
               Buscar
@@ -341,7 +334,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
           </div>
 
           {/* Filtro por tipo */}
-          <div className="form-group" style={{ marginBottom: 0 }}>
+          <div className="form-group type" style={{ marginBottom: 0 }}>
             <label className="form-label">Tipo</label>
             <select
               className="form-select"
@@ -355,7 +348,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
           </div>
 
           {/* Filtro por categoría */}
-          <div className="form-group" style={{ marginBottom: 0 }}>
+          <div className="form-group category" style={{ marginBottom: 0 }}>
             <label className="form-label">Categoría</label>
             <select
               className="form-select"
@@ -372,7 +365,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
           </div>
 
           {/* Filtro por método de pago */}
-          <div className="form-group" style={{ marginBottom: 0 }}>
+          <div className="form-group payment" style={{ marginBottom: 0 }}>
             <label className="form-label">Método de pago</label>
             <select
               className="form-select"
@@ -388,7 +381,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
           </div>
 
           {/* Ordenamiento */}
-          <div className="form-group" style={{ marginBottom: 0 }}>
+          <div className="form-group order" style={{ marginBottom: 0 }}>
             <label className="form-label">Ordenar por</label>
             <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
               <select

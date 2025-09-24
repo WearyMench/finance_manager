@@ -635,6 +635,7 @@ body {
 .main-body {
   flex: 1;
   padding: var(--space-6);
+  overflow-x: hidden;
   overflow-y: auto;
   background: var(--gradient-surface);
 }
@@ -1036,6 +1037,7 @@ html[data-theme="dark"]
   border-radius: var(--border-radius-xl);
   padding: var(--space-6);
   box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
 
 .chart-header {
@@ -1497,6 +1499,7 @@ html[data-theme="dark"]
 
   .chart-container {
     padding: var(--space-3);
+    overflow: hidden;
   }
 
   .dashboard-lower {
@@ -1532,9 +1535,12 @@ html[data-theme="dark"]
   /* Posición fija del popover de notificaciones en mobile */
   .notifications-popover {
     position: fixed !important;
-    top: 64px !important;
+    top: 56px !important;
     right: 16px !important;
     left: auto !important;
+    width: min(320px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow: auto !important;
   }
 
   .main-content {
@@ -1555,6 +1561,12 @@ html[data-theme="dark"]
 
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  /* Forzar 2x2 en stats del dashboard en mobile */
+  .stats-grid.dashboard-stats {
+    grid-template-columns: 1fr 1fr !important;
     gap: var(--space-4);
   }
 
@@ -1581,15 +1593,28 @@ html[data-theme="dark"]
     width: 100%;
   }
 
+  /* Grid compacto para filtros en Transacciones */
+  .filters-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3) !important;
+    align-items: end;
+  }
+  .filters-grid .form-group.search,
+  .filters-grid .form-group.order {
+    grid-column: 1 / -1;
+  }
+
   .transaction-content {
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
     gap: var(--space-3);
   }
 
   .transaction-amount {
-    text-align: left;
-    width: 100%;
+    text-align: right;
+    width: auto;
   }
 
   .modal-content {

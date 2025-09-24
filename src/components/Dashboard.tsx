@@ -86,18 +86,27 @@ const Dashboard = memo(function Dashboard() {
     credit: monthlyTransactions.filter(t => t.paymentMethod === 'credit').length,
   }), [monthlyTransactions]);
 
+  const isMobile = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 768px)').matches;
+  }, []);
+
   const chartOptions = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: isMobile ? 0 : 500,
+    },
+    transitions: isMobile ? { active: { animation: { duration: 0 } } } : undefined,
     plugins: {
       legend: {
         position: 'top' as const,
         labels: {
           usePointStyle: true,
-          padding: 20,
+          padding: isMobile ? 10 : 20,
           font: {
             family: 'Inter',
-            size: 12,
+            size: isMobile ? 10 : 12,
             weight: 500
           }
         }
@@ -121,7 +130,7 @@ const Dashboard = memo(function Dashboard() {
         ticks: {
           font: {
             family: 'Inter',
-            size: 11
+            size: isMobile ? 10 : 11
           },
           callback: function(value: string | number) {
             return `$${Number(value).toLocaleString()}`;
@@ -135,25 +144,28 @@ const Dashboard = memo(function Dashboard() {
         ticks: {
           font: {
             family: 'Inter',
-            size: 11
+            size: isMobile ? 10 : 11
           }
         }
       }
     },
-  }), []);
+  }), [isMobile]);
 
   const doughnutOptions = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: isMobile ? 0 : 500,
+    },
     plugins: {
       legend: {
         position: 'bottom' as const,
         labels: {
           usePointStyle: true,
-          padding: 15,
+          padding: isMobile ? 8 : 15,
           font: {
             family: 'Inter',
-            size: 11,
+            size: isMobile ? 10 : 11,
             weight: 500
           }
         }
@@ -169,7 +181,7 @@ const Dashboard = memo(function Dashboard() {
       }
     },
     cutout: '60%',
-  }), []);
+  }), [isMobile]);
 
   const getPaymentMethodIcon = (method: string) => {
     switch (method) {
@@ -382,7 +394,6 @@ const Dashboard = memo(function Dashboard() {
       <div 
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
           gap: 'var(--space-8)'
         }}
         className="animate-stagger-2 dashboard-charts"
@@ -450,7 +461,6 @@ const Dashboard = memo(function Dashboard() {
       <div 
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
           gap: 'var(--space-8)'
         }}
         className="animate-stagger-3 dashboard-lower"

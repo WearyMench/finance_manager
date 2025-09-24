@@ -308,7 +308,8 @@ export default function Layout({ children }: LayoutProps) {
                 style={{ 
                   padding: 'var(--space-2)', 
                   minWidth: 'auto',
-                  position: 'relative'
+                  position: 'relative',
+                  zIndex: 1101
                 }}
                 title="Notificaciones"
                 onClick={() => setNotificationsOpen(!notificationsOpen)}

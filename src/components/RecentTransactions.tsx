@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { List, Clock, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
@@ -14,6 +15,7 @@ const RecentTransactions = memo(function RecentTransactions({
   transactions, 
   categories 
 }: RecentTransactionsProps) {
+  const navigate = useNavigate();
   const getPaymentMethodLabel = (method: string) => {
     switch (method) {
       case 'cash': return 'Efectivo';
@@ -159,6 +161,7 @@ const RecentTransactions = memo(function RecentTransactions({
                 color: 'var(--color-primary-600)',
                 fontSize: '0.875rem'
               }}
+              onClick={() => navigate('/transactions')}
             >
               Ver todas las transacciones ({transactions.length})
             </button>
