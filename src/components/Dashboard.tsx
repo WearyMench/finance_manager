@@ -53,6 +53,28 @@ const Dashboard = memo(function Dashboard() {
     [getTransactionsByMonth, currentYear, currentMonth]
   );
 
+  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+  const prevMonthlyTransactions = useMemo(() => 
+    getTransactionsByMonth(prevYear, prevMonth), 
+    [getTransactionsByMonth, prevYear, prevMonth]
+  );
+
+  const currentIncome = useMemo(() => monthlyTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0), [monthlyTransactions]);
+  const currentExpenses = useMemo(() => monthlyTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0), [monthlyTransactions]);
+  const prevIncome = useMemo(() => prevMonthlyTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0), [prevMonthlyTransactions]);
+  const prevExpenses = useMemo(() => prevMonthlyTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0), [prevMonthlyTransactions]);
+  const currentBalance = currentIncome - currentExpenses;
+  const prevBalance = prevIncome - prevExpenses;
+
+  const pctChange = (curr: number, prev: number) => {
+    if (prev === 0) return curr > 0 ? 100 : 0;
+    return Math.round(((curr - prev) / prev) * 100);
+  };
+  const incomeChange = pctChange(currentIncome, prevIncome);
+  const expenseChange = pctChange(currentExpenses, prevExpenses);
+  const balanceChange = pctChange(currentBalance, prevBalance);
+
   // Use optimized chart data hooks
   const doughnutData = useChartData(monthlyTransactions, state.categories, 'expense');
   const barData = useMonthlyChartData(getTransactionsByMonth, currentYear);
@@ -220,18 +242,18 @@ const Dashboard = memo(function Dashboard() {
               </div>
               <div>
                 <h2 
+                  className="text-high-contrast"
                   style={{
                     fontSize: '1.5rem',
                     fontWeight: '700',
-                    color: '#1f2937',
                     margin: 0
                   }}
                 >
                   Resumen Financiero
                 </h2>
                 <p 
+                  className="text-medium-contrast"
                   style={{
-                    color: '#374151',
                     margin: 0,
                     fontSize: '0.875rem',
                     fontWeight: '500'
@@ -297,9 +319,9 @@ const Dashboard = memo(function Dashboard() {
           <div className="stat-card-value">
             ${stats.monthlyIncome.toLocaleString()}
           </div>
-          <div className="stat-card-trend positive">
-            <div className="trend-indicator positive" />
-            +12% vs mes anterior
+          <div className={`stat-card-trend ${incomeChange >= 0 ? 'positive' : 'negative'}`}>
+            <div className={`trend-indicator ${incomeChange >= 0 ? 'positive' : 'negative'}`} />
+            {incomeChange >= 0 ? '+' : ''}{incomeChange}% vs mes anterior
           </div>
         </div>
 
@@ -311,9 +333,9 @@ const Dashboard = memo(function Dashboard() {
           <div className="stat-card-value">
             ${stats.monthlyExpenses.toLocaleString()}
           </div>
-          <div className="stat-card-trend negative">
-            <div className="trend-indicator negative" />
-            +8% vs mes anterior
+          <div className={`stat-card-trend ${expenseChange >= 0 ? 'negative' : 'positive'}`}>
+            <div className={`trend-indicator ${expenseChange >= 0 ? 'negative' : 'positive'}`} />
+            {expenseChange >= 0 ? '+' : ''}{expenseChange}% vs mes anterior
           </div>
         </div>
 
@@ -330,9 +352,9 @@ const Dashboard = memo(function Dashboard() {
           >
             ${stats.monthlyBalance.toLocaleString()}
           </div>
-          <div className={`stat-card-trend ${stats.monthlyBalance >= 0 ? 'positive' : 'negative'}`}>
-            <div className={`trend-indicator ${stats.monthlyBalance >= 0 ? 'positive' : 'negative'}`} />
-            {stats.monthlyBalance >= 0 ? 'Ahorro positivo' : 'Gasto excedido'}
+          <div className={`stat-card-trend ${balanceChange >= 0 ? 'positive' : 'negative'}`}>
+            <div className={`trend-indicator ${balanceChange >= 0 ? 'positive' : 'negative'}`} />
+            {balanceChange >= 0 ? `Mejoró ${balanceChange}%` : `Empeoró ${Math.abs(balanceChange)}%`}
           </div>
         </div>
 
@@ -478,7 +500,7 @@ const Dashboard = memo(function Dashboard() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: 'var(--space-4)',
-                    background: 'rgba(255, 255, 255, 0.8)',
+                    background: 'var(--gradient-surface)',
                     borderRadius: 'var(--border-radius-lg)',
                     border: '1px solid var(--color-neutral-200)',
                     boxShadow: 'var(--shadow-sm)'

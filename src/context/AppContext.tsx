@@ -42,11 +42,25 @@ export type DashboardStats = {
   };
 };
 
+export type UserProfile = {
+  name: string;
+  email: string;
+  currency: 'USD' | 'EUR' | 'MXN' | 'COP';
+};
+
+export type NotificationSettings = {
+  budgetReminders: boolean;
+  weeklySummary: boolean;
+  savingGoals: boolean;
+};
+
 interface AppState {
   transactions: Transaction[];
   categories: Category[];
   budgets: Budget[];
   isLoading: boolean;
+  userProfile: UserProfile;
+  notificationSettings: NotificationSettings;
 }
 
 type AppAction =
@@ -62,13 +76,25 @@ type AppAction =
   | { type: 'SET_BUDGETS'; payload: Budget[] }
   | { type: 'ADD_BUDGET'; payload: Budget }
   | { type: 'UPDATE_BUDGET'; payload: Budget }
-  | { type: 'DELETE_BUDGET'; payload: string };
+  | { type: 'DELETE_BUDGET'; payload: string }
+  | { type: 'UPDATE_USER_PROFILE'; payload: UserProfile }
+  | { type: 'UPDATE_NOTIFICATION_SETTINGS'; payload: NotificationSettings };
 
 const initialState: AppState = {
   transactions: [],
   categories: [],
   budgets: [],
   isLoading: false,
+  userProfile: {
+    name: 'Usuario',
+    email: '',
+    currency: 'USD',
+  },
+  notificationSettings: {
+    budgetReminders: true,
+    weeklySummary: false,
+    savingGoals: true,
+  },
 };
 
 const defaultCategories: Category[] = [
@@ -154,6 +180,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
         budgets: state.budgets.filter(b => b.id !== action.payload),
       };
     
+    case 'UPDATE_USER_PROFILE':
+      return { ...state, userProfile: action.payload };
+    
+    case 'UPDATE_NOTIFICATION_SETTINGS':
+      return { ...state, notificationSettings: action.payload };
+    
     default:
       return state;
   }
@@ -183,6 +215,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const savedTransactions = localStorage.getItem('transactions');
         const savedCategories = localStorage.getItem('categories');
         const savedBudgets = localStorage.getItem('budgets');
+        const savedUserProfile = localStorage.getItem('userProfile');
+        const savedNotificationSettings = localStorage.getItem('notificationSettings');
 
         if (savedTransactions) {
           dispatch({ type: 'SET_TRANSACTIONS', payload: JSON.parse(savedTransactions) });
@@ -196,6 +230,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
         if (savedBudgets) {
           dispatch({ type: 'SET_BUDGETS', payload: JSON.parse(savedBudgets) });
+        }
+
+        if (savedUserProfile) {
+          dispatch({ type: 'UPDATE_USER_PROFILE', payload: JSON.parse(savedUserProfile) });
+        }
+
+        if (savedNotificationSettings) {
+          dispatch({ type: 'UPDATE_NOTIFICATION_SETTINGS', payload: JSON.parse(savedNotificationSettings) });
         }
       } catch (error) {
         console.error('Error loading data from localStorage:', error);
@@ -213,8 +255,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('transactions', JSON.stringify(state.transactions));
       localStorage.setItem('categories', JSON.stringify(state.categories));
       localStorage.setItem('budgets', JSON.stringify(state.budgets));
+      localStorage.setItem('userProfile', JSON.stringify(state.userProfile));
+      localStorage.setItem('notificationSettings', JSON.stringify(state.notificationSettings));
     }
-  }, [state.transactions, state.categories, state.budgets, state.isLoading]);
+  }, [state.transactions, state.categories, state.budgets, state.userProfile, state.notificationSettings, state.isLoading]);
+
+  // Recalculate budget spent based on transactions within budget date range
+  useEffect(() => {
+    if (state.isLoading) return;
+
+    const computeBudgetSpent = (budget: Budget): number => {
+      const start = new Date(budget.startDate);
+      const end = new Date(budget.endDate);
+
+      return state.transactions
+        .filter(t => t.type === 'expense' && t.category === budget.category)
+        .filter(t => {
+          const d = new Date(t.date);
+          return d >= start && d <= end;
+        })
+        .reduce((sum, t) => sum + t.amount, 0);
+    };
+
+    const updatedBudgets = state.budgets.map(budget => {
+      const newSpent = computeBudgetSpent(budget);
+      return newSpent !== budget.spent ? { ...budget, spent: newSpent } : budget;
+    });
+
+    const changed = updatedBudgets.some((b, i) => b.spent !== state.budgets[i]?.spent);
+    if (changed) {
+      dispatch({ type: 'SET_BUDGETS', payload: updatedBudgets });
+    }
+  }, [state.transactions, state.budgets, state.isLoading]);
 
   const getDashboardStats = useCallback((): DashboardStats => {
     const now = new Date();

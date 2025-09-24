@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home, 
   Plus, 
@@ -24,11 +25,16 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { getDashboardStats } = useApp();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const unreadCount = 0;
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState('');
 
   const navItems = [
     { 
@@ -61,6 +67,21 @@ export default function Layout({ children }: LayoutProps) {
     },
   ];
 
+  // Hidratar tema desde localStorage o prefers-color-scheme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      const isDark = savedTheme === 'dark';
+      setDarkMode(isDark);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    } else {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = prefersDark ? 'dark' : 'light';
+      setDarkMode(prefersDark);
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }, []);
+
   // Cerrar menú móvil al cambiar de ruta
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -77,7 +98,7 @@ export default function Layout({ children }: LayoutProps) {
             break;
           case 'k':
             e.preventDefault();
-            // Aquí se podría abrir un modal de búsqueda
+            setSearchOpen(true);
             break;
         }
       }
@@ -179,8 +200,8 @@ export default function Layout({ children }: LayoutProps) {
                 </span>
                 <TrendingUp size={16} style={{ color: 'var(--color-neutral-800)' }} />
               </div>
-                <div style={{ color: 'var(--color-neutral-800)', fontSize: '1.5rem', fontWeight: '700' }}>
-                $2,450.00
+              <div style={{ color: 'var(--color-neutral-800)', fontSize: '1.5rem', fontWeight: '700' }}>
+                ${getDashboardStats().totalBalance.toLocaleString()}
               </div>
               <div 
                 style={{
@@ -265,7 +286,21 @@ export default function Layout({ children }: LayoutProps) {
                 />
               </div>
 
-              {/* Botón de tema eliminado */}
+              {/* Modo oscuro */}
+              <button
+                className="btn btn-ghost"
+                style={{ padding: 'var(--space-2)', minWidth: 'auto' }}
+                title={darkMode ? 'Cambiar a claro' : 'Cambiar a oscuro'}
+                onClick={() => {
+                  const next = !darkMode;
+                  setDarkMode(next);
+                  const theme = next ? 'dark' : 'light';
+                  document.documentElement.setAttribute('data-theme', theme);
+                  localStorage.setItem('theme', theme);
+                }}
+              >
+                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
 
               {/* Notificaciones */}
               <button
@@ -279,18 +314,20 @@ export default function Layout({ children }: LayoutProps) {
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
               >
                 <Bell size={20} />
-                <span 
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '0',
-                    width: '8px',
-                    height: '8px',
-                    background: 'var(--color-error-500)',
-                    borderRadius: '50%',
-                    border: '2px solid var(--color-neutral-800)'
-                  }}
-                />
+                {unreadCount > 0 && (
+                  <span 
+                    style={{
+                      position: 'absolute',
+                      top: '-4px',
+                      right: '-4px',
+                      width: '10px',
+                      height: '10px',
+                      background: 'var(--color-error-500)',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 0 2px rgba(0,0,0,0.2)'
+                    }}
+                  />
+                )}
               </button>
 
               {notificationsOpen && (
@@ -301,7 +338,7 @@ export default function Layout({ children }: LayoutProps) {
                     top: 'calc(100% + 8px)',
                     right: 0,
                     width: '320px',
-                    zIndex: 'var(--z-popover)'
+                    zIndex: 1100
                   }}
                 >
                   <div className="card-header" style={{ marginBottom: 0 }}>
@@ -352,6 +389,53 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </main>
+
+      {/* Modal de búsqueda global */}
+      {searchOpen && (
+        <div className="modal-overlay" onClick={() => setSearchOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Buscar</h2>
+              <button onClick={() => setSearchOpen(false)} className="modal-close">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Buscar en transacciones</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Ej: café, 1200, alquiler..."
+                  value={globalSearch}
+                  onChange={(e) => setGlobalSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      navigate('/transactions', { state: { search: globalSearch } });
+                      setSearchOpen(false);
+                      setGlobalSearch('');
+                    }
+                  }}
+                  autoFocus
+                />
+              </div>
+              <div style={{ display: 'flex', gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
+                <button className="btn btn-ghost" onClick={() => setSearchOpen(false)}>Cancelar</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    navigate('/transactions', { state: { search: globalSearch } });
+                    setSearchOpen(false);
+                    setGlobalSearch('');
+                  }}
+                >
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Overlay para móvil */}
       {mobileMenuOpen && (

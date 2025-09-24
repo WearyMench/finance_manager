@@ -167,6 +167,209 @@
   --z-toast: 1080;
 }
 
+/* Tema oscuro con atributo de raíz */
+html[data-theme="dark"] {
+  --color-neutral-0: #0b1220;
+  --color-neutral-50: #0f172a;
+  --color-neutral-100: #111827;
+  --color-neutral-200: #1f2937;
+  --color-neutral-300: #273449;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #a3b2c5;
+  --color-neutral-600: #cbd5e1;
+  --color-neutral-700: #e2e8f0;
+  --color-neutral-800: #e5e7eb;
+  --color-neutral-900: #f8fafc;
+
+  --gradient-background: linear-gradient(
+    135deg,
+    #0f172a 0%,
+    #111827 25%,
+    #0f172a 50%,
+    #111827 75%,
+    #0b1220 100%
+  );
+  --gradient-glass: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.7) 0%,
+    rgba(17, 24, 39, 0.6) 100%
+  );
+  --gradient-card: linear-gradient(145deg, #0f172a 0%, #111827 100%);
+  --gradient-surface: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.6) 0%,
+    rgba(17, 24, 39, 0.5) 100%
+  );
+
+  /* Gradientes atenuados para evitar brillos en oscuro */
+  --gradient-primary: linear-gradient(
+    135deg,
+    rgba(100, 116, 139, 0.35) 0%,
+    rgba(51, 65, 85, 0.55) 100%
+  );
+  --gradient-success: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.35) 0%,
+    rgba(21, 128, 61, 0.55) 100%
+  );
+  --gradient-warning: linear-gradient(
+    135deg,
+    rgba(234, 179, 8, 0.35) 0%,
+    rgba(161, 98, 7, 0.55) 100%
+  );
+  --gradient-error: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.35) 0%,
+    rgba(185, 28, 28, 0.55) 100%
+  );
+}
+
+/* Overrides específicos en modo oscuro */
+html[data-theme="dark"] .layout {
+  background: var(--gradient-background);
+}
+
+html[data-theme="dark"] .sidebar {
+  background: rgba(17, 24, 39, 0.9);
+  border-right-color: var(--color-neutral-300);
+  backdrop-filter: blur(12px);
+}
+
+html[data-theme="dark"] .main-header {
+  background: rgba(17, 24, 39, 0.9);
+  border-bottom-color: var(--color-neutral-300);
+  backdrop-filter: blur(12px);
+}
+
+html[data-theme="dark"] .nav-item-description,
+html[data-theme="dark"] .card-title,
+html[data-theme="dark"] .card-description,
+html[data-theme="dark"] .text-high-contrast,
+html[data-theme="dark"] .text-medium-contrast,
+html[data-theme="dark"] .text-subtle {
+  color: #e5e7eb !important;
+}
+
+/* Empty state en oscuro */
+html[data-theme="dark"] .empty-state {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px dashed rgba(148, 163, 184, 0.25) !important;
+}
+html[data-theme="dark"] .empty-state-icon {
+  background: rgba(148, 163, 184, 0.12) !important;
+  color: #e5e7eb !important;
+}
+
+html[data-theme="dark"] .nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+html[data-theme="dark"] .nav-item.active {
+  background: rgba(124, 115, 242, 0.12);
+}
+
+html[data-theme="dark"] .legend-item {
+  background: rgba(17, 24, 39, 0.6);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .stat-card {
+  border-color: rgba(148, 163, 184, 0.25);
+  background: linear-gradient(
+    145deg,
+    rgba(17, 24, 39, 0.85) 0%,
+    rgba(15, 23, 42, 0.8) 100%
+  );
+  box-shadow: var(--shadow-md);
+}
+
+html[data-theme="dark"] .card:hover,
+html[data-theme="dark"] .stat-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-neutral-300);
+}
+
+html[data-theme="dark"] .btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-neutral-800);
+  border-color: var(--color-neutral-300);
+}
+
+html[data-theme="dark"] .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Botones sólidos atenuados en oscuro */
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .btn-success,
+html[data-theme="dark"] .btn-warning,
+html[data-theme="dark"] .btn-error {
+  box-shadow: var(--shadow-md);
+}
+
+html[data-theme="dark"] .btn-primary:hover,
+html[data-theme="dark"] .btn-success:hover,
+html[data-theme="dark"] .btn-warning:hover,
+html[data-theme="dark"] .btn-error:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* FAB menos brillante en oscuro */
+html[data-theme="dark"] .btn-fab {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Detalles sutiles */
+html[data-theme="dark"] .card::before {
+  opacity: 0.15;
+}
+
+html[data-theme="dark"] .stat-card::before {
+  opacity: 0.06;
+}
+
+html[data-theme="dark"] .nav-item::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+}
+
+/* Formularios en oscuro */
+html[data-theme="dark"] .form-input,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .form-textarea {
+  background: rgba(148, 163, 184, 0.06);
+  border-color: rgba(148, 163, 184, 0.25);
+  color: var(--color-neutral-800);
+}
+
+html[data-theme="dark"] .form-input::placeholder,
+html[data-theme="dark"] .form-textarea::placeholder {
+  color: rgba(226, 232, 240, 0.7);
+}
+
+/* Modales en oscuro */
+html[data-theme="dark"] .modal-content {
+  background: linear-gradient(
+    145deg,
+    rgba(17, 24, 39, 0.95),
+    rgba(15, 23, 42, 0.9)
+  );
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* Estados vacíos y detalles en oscuro */
+html[data-theme="dark"] .empty-state-title,
+html[data-theme="dark"] .empty-state-description,
+html[data-theme="dark"] .transaction-details,
+html[data-theme="dark"] .transaction-category {
+  color: var(--color-neutral-800) !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -378,6 +581,7 @@ body {
   padding: var(--space-4) var(--space-6);
   position: relative;
   box-shadow: var(--shadow-sm);
+  z-index: var(--z-sticky);
 }
 
 .main-header::before {
@@ -481,6 +685,19 @@ body {
   color: var(--color-neutral-800) !important;
   font-size: 0.875rem;
   margin: 0;
+}
+
+/* Badge de conteo en Recientes (amarillo muy vivo -> neutro) */
+.card-header > div[style*="background: var(--color-warning-100)"] {
+  background: var(--color-neutral-100) !important;
+  color: var(--color-neutral-700) !important;
+}
+
+html[data-theme="dark"]
+  .card-header
+  > div[style*="background: var(--color-warning-100)"] {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #e5e7eb !important;
 }
 
 /* Stats Cards */
@@ -862,7 +1079,7 @@ body {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--gradient-surface);
   border-radius: var(--border-radius-full);
   border: 1px solid var(--color-neutral-200);
   font-size: 0.75rem;
@@ -989,9 +1206,9 @@ body {
 .empty-state {
   text-align: center;
   padding: var(--space-12) var(--space-6);
-  background: rgba(255, 255, 255, 0.8);
+  background: #f8fafc;
   backdrop-filter: blur(20px);
-  border: 2px dashed var(--color-neutral-300);
+  border: 1px dashed var(--color-neutral-200);
   border-radius: var(--border-radius-xl);
 }
 
@@ -1000,7 +1217,7 @@ body {
   height: 80px;
   margin: 0 auto var(--space-6);
   border-radius: 50%;
-  background: var(--color-neutral-100);
+  background: #f1f5f9;
   display: flex;
   align-items: center;
   justify-content: center;

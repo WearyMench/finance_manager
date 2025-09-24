@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
   Plus, 
@@ -34,6 +34,170 @@ export default function Settings() {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | undefined>();
   const [activeTab, setActiveTab] = useState<'categories' | 'profile' | 'notifications' | 'data'>('categories');
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [profile, setProfile] = useState({
+    name: state.userProfile.name,
+    email: state.userProfile.email,
+    currency: state.userProfile.currency,
+  });
+  const [notif, setNotif] = useState({
+    budgetReminders: state.notificationSettings.budgetReminders,
+    weeklySummary: state.notificationSettings.weeklySummary,
+    savingGoals: state.notificationSettings.savingGoals,
+  });
+
+  const handleSaveProfile = () => {
+    dispatch({ type: 'UPDATE_USER_PROFILE', payload: profile as any });
+  };
+
+  const handleSaveNotifications = () => {
+    dispatch({ type: 'UPDATE_NOTIFICATION_SETTINGS', payload: notif as any });
+  };
+
+  const escapeCSV = (value: any) => {
+    const str = value === undefined || value === null ? '' : String(value);
+    if (str.includes('"') || str.includes(',') || str.includes('\n')) {
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+    return str;
+  };
+
+  const downloadFile = (filename: string, content: string, mime = 'text/csv;charset=utf-8') => {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportTransactionsCSV = () => {
+    const headers = ['id','type','amount','description','category','paymentMethod','date','createdAt'];
+    const rows = state.transactions.map(t => [
+      t.id,
+      t.type,
+      t.amount,
+      t.description,
+      t.category,
+      t.paymentMethod,
+      t.date,
+      t.createdAt
+    ].map(escapeCSV).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    downloadFile('transactions.csv', csv);
+  };
+
+  const exportBudgetsCSV = () => {
+    const headers = ['id','category','amount','spent','period','startDate','endDate'];
+    const rows = state.budgets.map(b => [
+      b.id,
+      b.category,
+      b.amount,
+      b.spent,
+      b.period,
+      b.startDate,
+      b.endDate
+    ].map(escapeCSV).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    downloadFile('budgets.csv', csv);
+  };
+
+  const handleExportClick = () => {
+    exportTransactionsCSV();
+    exportBudgetsCSV();
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const parseCSV = (text: string): { headers: string[]; rows: string[][] } => {
+    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim().length > 0);
+    if (lines.length === 0) return { headers: [], rows: [] };
+    const headers = lines[0].split(',').map(h => h.trim());
+    const rows: string[][] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const row = [] as string[];
+      let current = '';
+      let inQuotes = false;
+      const line = lines[i];
+      for (let c = 0; c < line.length; c++) {
+        const ch = line[c];
+        if (inQuotes) {
+          if (ch === '"') {
+            if (c + 1 < line.length && line[c + 1] === '"') {
+              current += '"';
+              c++;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            current += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === ',') {
+            row.push(current);
+            current = '';
+          } else {
+            current += ch;
+          }
+        }
+      }
+      row.push(current);
+      rows.push(row);
+    }
+    return { headers, rows };
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const { headers, rows } = parseCSV(text);
+      // Expect our transactions headers
+      const required = ['type','amount','description','category','paymentMethod','date'];
+      const hasRequired = required.every(h => headers.includes(h));
+      if (!hasRequired) {
+        alert('El CSV no tiene las columnas requeridas para transacciones.');
+        return;
+      }
+      const headerIndex: Record<string, number> = {};
+      headers.forEach((h, idx) => headerIndex[h] = idx);
+      const imported = rows.map(cols => {
+        const id = cols[headerIndex['id']]?.trim() || Date.now().toString() + Math.random().toString(36).slice(2);
+        const createdAt = cols[headerIndex['createdAt']]?.trim() || new Date().toISOString();
+        return {
+          id,
+          type: (cols[headerIndex['type']] || 'expense').trim() as 'income' | 'expense',
+          amount: Number(cols[headerIndex['amount']] || 0),
+          description: (cols[headerIndex['description']] || '').trim(),
+          category: (cols[headerIndex['category']] || '').trim(),
+          paymentMethod: (cols[headerIndex['paymentMethod']] || 'cash').trim() as any,
+          date: (cols[headerIndex['date']] || new Date().toISOString().split('T')[0]).trim(),
+          createdAt,
+        };
+      }).filter(t => t.description && t.amount > 0 && t.category);
+
+      // Merge by id (imported overwrites existing with same id)
+      const mapById = new Map<string, any>();
+      state.transactions.forEach(t => mapById.set(t.id, t));
+      imported.forEach(t => mapById.set(t.id, t));
+      const merged = Array.from(mapById.values());
+      dispatch({ type: 'SET_TRANSACTIONS', payload: merged });
+      alert(`Importadas ${imported.length} transacciones.`);
+    } catch (err) {
+      console.error(err);
+      alert('Error al importar el archivo CSV.');
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const handleAddCategory = () => {
     setEditingCategory(undefined);
@@ -138,8 +302,8 @@ export default function Settings() {
                   padding: 'var(--space-3) var(--space-4)',
                   borderRadius: 'var(--border-radius-lg)',
                   border: `2px solid ${isActive ? 'var(--color-primary-500)' : 'var(--color-neutral-300)'}`,
-                  background: isActive ? 'var(--color-primary-50)' : 'white',
-                  color: isActive ? 'var(--color-primary-700)' : 'var(--color-neutral-700)',
+                  background: isActive ? 'rgba(124, 115, 242, 0.12)' : 'var(--gradient-surface)',
+                  color: isActive ? 'var(--color-neutral-800)' : 'var(--color-neutral-800)',
                   cursor: 'pointer',
                   transition: 'all var(--transition-fast)',
                   fontSize: '0.875rem',
@@ -379,7 +543,8 @@ export default function Settings() {
                 type="text"
                 className="form-input"
                 placeholder="Tu nombre"
-                defaultValue="Usuario"
+                value={profile.name}
+                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
               />
             </div>
 
@@ -389,12 +554,14 @@ export default function Settings() {
                 type="email"
                 className="form-input"
                 placeholder="tu@email.com"
+                value={profile.email}
+                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
               />
             </div>
 
             <div className="form-group">
               <label className="form-label">Moneda preferida</label>
-              <select className="form-select" defaultValue="USD">
+              <select className="form-select" value={profile.currency} onChange={(e) => setProfile({ ...profile, currency: e.target.value as any })}>
                 <option value="USD">Dólar (USD)</option>
                 <option value="EUR">Euro (EUR)</option>
                 <option value="MXN">Peso Mexicano (MXN)</option>
@@ -402,7 +569,7 @@ export default function Settings() {
               </select>
             </div>
 
-            <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>
+            <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }} onClick={handleSaveProfile}>
               <Save size={16} />
               Guardar Cambios
             </button>
@@ -446,18 +613,27 @@ export default function Settings() {
             <NotificationSetting
               title="Recordatorios de presupuesto"
               description="Recibe alertas cuando te acerques al límite de tu presupuesto"
-              defaultChecked={true}
+              defaultChecked={notif.budgetReminders}
+              onChange={(v: boolean) => setNotif({ ...notif, budgetReminders: v })}
             />
             <NotificationSetting
               title="Resumen semanal"
               description="Recibe un resumen de tus gastos cada semana"
-              defaultChecked={false}
+              defaultChecked={notif.weeklySummary}
+              onChange={(v: boolean) => setNotif({ ...notif, weeklySummary: v })}
             />
             <NotificationSetting
               title="Metas de ahorro"
               description="Notificaciones sobre el progreso de tus metas de ahorro"
-              defaultChecked={true}
+              defaultChecked={notif.savingGoals}
+              onChange={(v: boolean) => setNotif({ ...notif, savingGoals: v })}
             />
+            <div>
+              <button className="btn btn-primary" onClick={handleSaveNotifications}>
+                <Save size={16} />
+                Guardar preferencias
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -532,7 +708,7 @@ export default function Settings() {
               <p style={{ fontSize: '0.875rem', color: 'var(--color-neutral-700)', marginBottom: 'var(--space-4)' }}>
                 Descarga tus transacciones y presupuestos en formato CSV
               </p>
-              <button className="btn btn-success">
+              <button className="btn btn-success" onClick={handleExportClick}>
                 <Download size={16} />
                 Exportar
               </button>
@@ -569,10 +745,17 @@ export default function Settings() {
               <p style={{ fontSize: '0.875rem', color: 'var(--color-neutral-700)', marginBottom: 'var(--space-4)' }}>
                 Carga transacciones desde un archivo CSV
               </p>
-              <button className="btn btn-primary">
+              <button className="btn btn-primary" onClick={handleImportClick}>
                 <Upload size={16} />
                 Importar
               </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                style={{ display: 'none' }}
+                onChange={onFileChange}
+              />
             </div>
           </div>
         </div>
@@ -712,9 +895,10 @@ interface NotificationSettingProps {
   title: string;
   description: string;
   defaultChecked: boolean;
+  onChange?: (value: boolean) => void;
 }
 
-function NotificationSetting({ title, description, defaultChecked }: NotificationSettingProps) {
+function NotificationSetting({ title, description, defaultChecked, onChange }: NotificationSettingProps) {
   const [checked, setChecked] = useState(defaultChecked);
 
   return (
@@ -765,7 +949,10 @@ function NotificationSetting({ title, description, defaultChecked }: Notificatio
         <input
           type="checkbox"
           checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
+          onChange={(e) => {
+            setChecked(e.target.checked);
+            onChange?.(e.target.checked);
+          }}
           style={{ display: 'none' }}
         />
         <div 

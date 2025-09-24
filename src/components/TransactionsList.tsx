@@ -45,6 +45,9 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
     if (location.state?.showForm) {
       setShowForm(true);
     }
+    if (location.state?.search) {
+      setSearchTerm(location.state.search);
+    }
   }, [location.state]);
   
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>();
@@ -53,7 +56,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [filterPaymentMethod] = useState<string>('all');
+  const [filterPaymentMethod, setFilterPaymentMethod] = useState<string>('all');
 
   const handleAddTransaction = useCallback((transaction: Omit<Transaction, 'id' | 'createdAt'>) => {
     const newTransaction: Transaction = {
@@ -368,6 +371,22 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
             </select>
           </div>
 
+          {/* Filtro por método de pago */}
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Método de pago</label>
+            <select
+              className="form-select"
+              value={filterPaymentMethod}
+              onChange={(e) => setFilterPaymentMethod(e.target.value)}
+            >
+              <option value="all">Todos</option>
+              <option value="cash">Efectivo</option>
+              <option value="transfer">Transferencia</option>
+              <option value="debit">Débito</option>
+              <option value="credit">Crédito</option>
+            </select>
+          </div>
+
           {/* Ordenamiento */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Ordenar por</label>
@@ -408,18 +427,18 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
               <List size={32} />
             </div>
             <h3 className="empty-state-title">
-              {searchTerm || filterType !== 'all' || filterCategory !== 'all' 
+              {searchTerm || filterType !== 'all' || filterCategory !== 'all' || filterPaymentMethod !== 'all' 
                 ? 'No se encontraron transacciones' 
                 : 'No hay transacciones'
               }
             </h3>
             <p className="empty-state-description">
-              {searchTerm || filterType !== 'all' || filterCategory !== 'all'
+              {searchTerm || filterType !== 'all' || filterCategory !== 'all' || filterPaymentMethod !== 'all'
                 ? 'Intenta cambiar los filtros de búsqueda'
                 : 'Comienza agregando tu primera transacción'
               }
             </p>
-            {(!searchTerm && filterType === 'all' && filterCategory === 'all') && (
+            {(!searchTerm && filterType === 'all' && filterCategory === 'all' && filterPaymentMethod === 'all') && (
               <button 
                 onClick={() => setShowForm(true)}
                 className="btn btn-primary"
