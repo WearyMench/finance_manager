@@ -89,6 +89,26 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
     return state.categories.filter(category => category.type === formData.type);
   }, [state.categories, formData.type]);
 
+  // Auto-seleccionar la primera categoría disponible cuando cambie el tipo o carguen categorías
+  const ensureCategorySelected = useCallback(() => {
+    if (!formData.category && availableCategories.length > 0) {
+      setFormData(prev => ({ ...prev, category: availableCategories[0].id }));
+    } else if (
+      formData.category &&
+      availableCategories.length > 0 &&
+      !availableCategories.some(c => c.id === formData.category)
+    ) {
+      // Si la categoría actual ya no es válida para el tipo, seleccionar la primera válida
+      setFormData(prev => ({ ...prev, category: availableCategories[0].id }));
+    }
+  }, [formData.category, availableCategories]);
+
+  useMemo(() => {
+    ensureCategorySelected();
+    // return value not used; using useMemo to run after availableCategories changes without extra re-render
+    return null;
+  }, [ensureCategorySelected]);
+
   const paymentMethods = [
     { value: 'cash', label: 'Efectivo' },
     { value: 'transfer', label: 'Transferencia' },
@@ -122,6 +142,7 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
               Tipo de transacción
             </label>
             <div 
+              className="form-grid-2"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
@@ -135,8 +156,8 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
                   padding: 'var(--space-4)',
                   borderRadius: 'var(--border-radius-lg)',
                   border: `2px solid ${formData.type === 'income' ? 'var(--color-success-500)' : 'var(--color-neutral-300)'}`,
-                  background: formData.type === 'income' ? 'var(--color-success-50)' : 'white',
-                  color: formData.type === 'income' ? 'var(--color-success-700)' : 'var(--color-neutral-700)',
+                  background: formData.type === 'income' ? 'rgba(34, 197, 94, 0.12)' : 'var(--gradient-surface)',
+                  color: 'var(--color-neutral-800)',
                   cursor: 'pointer',
                   transition: 'all var(--transition-fast)',
                   fontWeight: '600',
@@ -152,8 +173,8 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
                   padding: 'var(--space-4)',
                   borderRadius: 'var(--border-radius-lg)',
                   border: `2px solid ${formData.type === 'expense' ? 'var(--color-error-500)' : 'var(--color-neutral-300)'}`,
-                  background: formData.type === 'expense' ? 'var(--color-error-50)' : 'white',
-                  color: formData.type === 'expense' ? 'var(--color-error-700)' : 'var(--color-neutral-700)',
+                  background: formData.type === 'expense' ? 'rgba(239, 68, 68, 0.12)' : 'var(--gradient-surface)',
+                  color: 'var(--color-neutral-800)',
                   cursor: 'pointer',
                   transition: 'all var(--transition-fast)',
                   fontWeight: '600',

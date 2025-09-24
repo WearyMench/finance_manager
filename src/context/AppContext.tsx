@@ -222,9 +222,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           dispatch({ type: 'SET_TRANSACTIONS', payload: JSON.parse(savedTransactions) });
         }
 
-        if (savedCategories) {
-          dispatch({ type: 'SET_CATEGORIES', payload: JSON.parse(savedCategories) });
-        } else {
+        // Categories: merge saved with defaults so app is always usable
+        try {
+          if (savedCategories) {
+            const parsed: Category[] = JSON.parse(savedCategories);
+            const byName = new Set(parsed.map(c => c.name.toLowerCase()));
+            const merged: Category[] = [
+              ...parsed,
+              ...defaultCategories.filter(c => !byName.has(c.name.toLowerCase())),
+            ];
+            dispatch({ type: 'SET_CATEGORIES', payload: merged });
+          } else {
+            dispatch({ type: 'SET_CATEGORIES', payload: defaultCategories });
+          }
+        } catch {
           dispatch({ type: 'SET_CATEGORIES', payload: defaultCategories });
         }
 

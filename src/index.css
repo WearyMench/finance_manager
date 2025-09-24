@@ -994,6 +994,7 @@ html[data-theme="dark"]
 .form-select,
 .form-textarea {
   width: 100%;
+  min-width: 0;
   padding: var(--space-4);
   font-family: var(--font-primary);
   font-size: 0.875rem;
@@ -1002,6 +1003,13 @@ html[data-theme="dark"]
   border-radius: var(--border-radius-lg);
   transition: all var(--transition-normal);
   color: var(--color-neutral-900);
+}
+
+/* Grid 2 columnas para formularios (colapsa a 1 en mobile) */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
 }
 
 .form-input::placeholder,
@@ -1473,6 +1481,40 @@ html[data-theme="dark"]
 
 /* Responsive */
 @media (max-width: 768px) {
+  /* Dashboard: mejorar jerarquía en mobile */
+  .dashboard-header {
+    padding: var(--space-4);
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .chart-container {
+    padding: var(--space-3);
+  }
+
+  .dashboard-lower {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .payment-methods-card .card-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .recent-transactions-card .card-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .payment-row {
+    padding: var(--space-3) !important;
+  }
   .sidebar {
     position: fixed;
     left: -280px;
@@ -1484,6 +1526,15 @@ html[data-theme="dark"]
 
   .sidebar.open {
     left: 0;
+    z-index: var(--z-modal);
+  }
+
+  /* Posición fija del popover de notificaciones en mobile */
+  .notifications-popover {
+    position: fixed !important;
+    top: 64px !important;
+    right: 16px !important;
+    left: auto !important;
   }
 
   .main-content {
@@ -1587,6 +1638,12 @@ html[data-theme="dark"]
 
   .chart-title-text p {
     font-size: 0.75rem;
+  }
+
+  /* Formularios: 1 columna en pantallas pequeñas */
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
   }
 
   .transaction-item {

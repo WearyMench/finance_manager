@@ -543,6 +543,11 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Auto-seleccionar primera categoría si no hay seleccionada
+  if (!formData.category && categories.length > 0) {
+    setFormData(prev => ({ ...prev, category: categories[0].id }));
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -648,7 +653,7 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
             </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+          <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label">Fecha de Inicio *</label>
               <input

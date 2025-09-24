@@ -288,7 +288,7 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Modo oscuro */}
               <button
-                className="btn btn-ghost"
+                className="btn btn-ghost btn-theme"
                 style={{ padding: 'var(--space-2)', minWidth: 'auto' }}
                 title={darkMode ? 'Cambiar a claro' : 'Cambiar a oscuro'}
                 onClick={() => {
@@ -332,7 +332,7 @@ export default function Layout({ children }: LayoutProps) {
 
               {notificationsOpen && (
                 <div
-                  className="card"
+                  className="card notifications-popover"
                   style={{
                     position: 'absolute',
                     top: 'calc(100% + 8px)',
@@ -443,9 +443,9 @@ export default function Layout({ children }: LayoutProps) {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 'var(--z-modal-backdrop)'
+            background: 'rgba(0, 0, 0, 0.4)',
+            // removemos blur para que los ítems sean legibles
+            zIndex: 1040
           }}
           onClick={() => setMobileMenuOpen(false)}
         />
@@ -471,11 +471,12 @@ export default function Layout({ children }: LayoutProps) {
             font-size: 1.25rem;
           }
           
-          .header-actions > *:not(.btn-ghost[title="Abrir menú"]) {
+          .header-actions > *:not(.btn-ghost[title="Abrir menú"]):not(.btn-ghost[title="Perfil"]):not(.btn-ghost[title="Notificaciones"]):not(.btn-theme) {
             display: none;
           }
           
-          .header-actions .btn-ghost[title="Perfil"] {
+          .header-actions .btn-ghost[title="Perfil"],
+          .header-actions .btn-ghost[title="Notificaciones"] {
             display: flex !important;
           }
         }

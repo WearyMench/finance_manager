@@ -206,7 +206,7 @@ const Dashboard = memo(function Dashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
       {/* Header con resumen */}
-      <div className="card animate-fade-in">
+      <div className="card animate-fade-in dashboard-header">
         <div 
           style={{
             display: 'flex',
@@ -310,7 +310,7 @@ const Dashboard = memo(function Dashboard() {
       </div>
 
       {/* Tarjetas de estadísticas */}
-      <div className="stats-grid animate-stagger-1">
+      <div className="stats-grid animate-stagger-1 dashboard-stats">
         <div className="stat-card income">
           <div className="stat-card-icon">
             <TrendingUp size={24} />
@@ -385,7 +385,7 @@ const Dashboard = memo(function Dashboard() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
           gap: 'var(--space-8)'
         }}
-        className="animate-stagger-2"
+        className="animate-stagger-2 dashboard-charts"
       >
         {/* Gráfico de tendencias mensuales */}
         <div className="chart-container">
@@ -453,10 +453,10 @@ const Dashboard = memo(function Dashboard() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
           gap: 'var(--space-8)'
         }}
-        className="animate-stagger-3"
+        className="animate-stagger-3 dashboard-lower"
       >
         {/* Métodos de pago */}
-        <div className="card">
+        <div className="card payment-methods-card">
           <div className="card-header">
             <div 
               style={{
@@ -582,10 +582,12 @@ const Dashboard = memo(function Dashboard() {
         </div>
 
         {/* Transacciones recientes */}
-        <RecentTransactions 
-          transactions={monthlyTransactions} 
-          categories={state.categories} 
-        />
+        <div className="recent-transactions-card">
+          <RecentTransactions 
+            transactions={monthlyTransactions} 
+            categories={state.categories} 
+          />
+        </div>
       </div>
     </div>
   );
