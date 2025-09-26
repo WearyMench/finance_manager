@@ -7,8 +7,6 @@ import {
   Zap, 
   CheckCircle,
   ArrowRight,
-  Star,
-  Users,
   DollarSign,
   Sun,
   Moon

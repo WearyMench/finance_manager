@@ -105,23 +105,7 @@ const initialState: AppState = {
   user: null,
 };
 
-const defaultCategories: Category[] = [
-  // Income categories
-  { id: '1', name: 'Salario', type: 'income', color: '#10B981', icon: 'Briefcase' },
-  { id: '2', name: 'Freelance', type: 'income', color: '#3B82F6', icon: 'Laptop' },
-  { id: '3', name: 'Inversiones', type: 'income', color: '#8B5CF6', icon: 'TrendingUp' },
-  { id: '4', name: 'Otros', type: 'income', color: '#6B7280', icon: 'Wallet' },
-  
-  // Expense categories
-  { id: '5', name: 'Alimentación', type: 'expense', color: '#F59E0B', icon: 'ShoppingCart' },
-  { id: '6', name: 'Transporte', type: 'expense', color: '#EF4444', icon: 'Car' },
-  { id: '7', name: 'Vivienda', type: 'expense', color: '#8B5CF6', icon: 'Home' },
-  { id: '8', name: 'Entretenimiento', type: 'expense', color: '#EC4899', icon: 'Film' },
-  { id: '9', name: 'Salud', type: 'expense', color: '#10B981', icon: 'Heart' },
-  { id: '10', name: 'Educación', type: 'expense', color: '#3B82F6', icon: 'BookOpen' },
-  { id: '11', name: 'Ropa', type: 'expense', color: '#F97316', icon: 'Shirt' },
-  { id: '12', name: 'Otros', type: 'expense', color: '#6B7280', icon: 'Package' },
-];
+// Default categories are now handled by the backend
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {

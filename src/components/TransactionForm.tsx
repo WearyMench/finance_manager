@@ -40,7 +40,7 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
   // Auto-seleccionar primera categoría si no hay seleccionada
   useEffect(() => {
     if (!formData.category && availableCategories.length > 0) {
-      const selectedCategory = availableCategories[0]._id || availableCategories[0].id;
+      const selectedCategory = (availableCategories[0] as any)._id || availableCategories[0].id;
       setFormData(prev => ({ ...prev, category: selectedCategory }));
     }
   }, [formData.category, availableCategories]);
@@ -256,7 +256,7 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
             >
               <option value="">Selecciona una categoría</option>
               {availableCategories.map(category => (
-                <option key={category._id || category.id} value={category._id || category.id}>
+                <option key={(category as any)._id || category.id} value={(category as any)._id || category.id}>
                   {category.name}
                 </option>
               ))}

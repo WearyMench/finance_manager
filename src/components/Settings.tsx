@@ -94,7 +94,7 @@ export default function Settings() {
       const response = await apiService.updateUserProfile(profile);
       if (response.data?.user) {
         // Actualizar tanto el perfil como el usuario en el estado
-        dispatch({ type: 'UPDATE_USER_PROFILE', payload: response.data.user });
+        dispatch({ type: 'UPDATE_USER_PROFILE', payload: response.data.user as any });
         dispatch({ type: 'SET_USER', payload: response.data.user });
         showNotification('success', 'Perfil actualizado exitosamente');
       } else {
@@ -298,7 +298,7 @@ export default function Settings() {
         }
       } catch (error) {
         console.error('Error eliminando categoría:', error);
-        showNotification('error', 'Error al eliminar la categoría: ' + (error.message || 'Error desconocido'));
+        showNotification('error', 'Error al eliminar la categoría: ' + ((error as any).message || 'Error desconocido'));
       }
     }
   }; 
@@ -317,7 +317,10 @@ export default function Settings() {
         }
       } else {
         // Create new category
-        const response = await apiService.createCategory(categoryData);
+        const response = await apiService.createCategory({
+          ...categoryData,
+          color: categoryData.color || '#6B7280'
+        });
         if (response.data?.category) {
           dispatch({
             type: 'ADD_CATEGORY',
@@ -504,7 +507,7 @@ export default function Settings() {
               >
                 {incomeCategories.map((category) => (
                   <CategoryCard
-                    key={category._id || category.id}
+                    key={(category as any)._id || category.id}
                     category={category}
                     onEdit={handleEditCategory}
                     onDelete={handleDeleteCategory}
@@ -594,7 +597,7 @@ export default function Settings() {
               >
                 {expenseCategories.map((category) => (
                   <CategoryCard
-                    key={category._id || category.id}
+                    key={(category as any)._id || category.id}
                     category={category}
                     onEdit={handleEditCategory}
                     onDelete={handleDeleteCategory}
@@ -1079,7 +1082,7 @@ function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
             <Edit size={14} />
           </button>
           <button
-            onClick={() => onDelete(category._id || category.id)}
+            onClick={() => onDelete((category as any)._id || category.id)}
             className="btn btn-error"
             style={{ padding: 'var(--space-2)', minWidth: 'auto' }}
             title="Eliminar categoría"

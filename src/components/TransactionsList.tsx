@@ -378,7 +378,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
             >
               <option value="all">Todas</option>
               {state.categories.map(category => (
-                <option key={category._id || category.id} value={category._id || category.id}>
+                <option key={(category as any)._id || category.id} value={(category as any)._id || category.id}>
                   {category.name}
                 </option>
               ))}
@@ -466,7 +466,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
         ) : (
           <div className="transaction-list">
             {filteredAndSortedTransactions.map((transaction) => {
-              const category = state.categories.find(c => (c._id || c.id) === transaction.category);
+              const category = state.categories.find(c => ((c as any)._id || c.id) === transaction.category);
               
               return (
                 <div 
