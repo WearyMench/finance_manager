@@ -15,11 +15,17 @@ export default defineConfig({
           charts: ['chart.js', 'react-chartjs-2'],
           router: ['react-router-dom'],
           utils: ['date-fns', 'lucide-react']
-        }
+        },
+        // Ensure proper file extensions
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js'
       }
     },
     // Increase chunk size warning limit
     chunkSizeWarningLimit: 1000,
+    // Ensure proper MIME types
+    assetsInlineLimit: 0,
   },
   server: {
     // Optimize dev server
