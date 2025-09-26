@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback } from 'react';
+import apiService from '../services/api';
 
 // Types
 export type Transaction = {
@@ -61,6 +62,8 @@ interface AppState {
   isLoading: boolean;
   userProfile: UserProfile;
   notificationSettings: NotificationSettings;
+  isAuthenticated: boolean;
+  user: any | null;
 }
 
 type AppAction =
@@ -78,7 +81,10 @@ type AppAction =
   | { type: 'UPDATE_BUDGET'; payload: Budget }
   | { type: 'DELETE_BUDGET'; payload: string }
   | { type: 'UPDATE_USER_PROFILE'; payload: UserProfile }
-  | { type: 'UPDATE_NOTIFICATION_SETTINGS'; payload: NotificationSettings };
+  | { type: 'UPDATE_NOTIFICATION_SETTINGS'; payload: NotificationSettings }
+  | { type: 'SET_AUTHENTICATED'; payload: boolean }
+  | { type: 'SET_USER'; payload: any | null }
+  | { type: 'LOGOUT' };
 
 const initialState: AppState = {
   transactions: [],
@@ -95,6 +101,8 @@ const initialState: AppState = {
     weeklySummary: false,
     savingGoals: true,
   },
+  isAuthenticated: false,
+  user: null,
 };
 
 const defaultCategories: Category[] = [
@@ -186,6 +194,32 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'UPDATE_NOTIFICATION_SETTINGS':
       return { ...state, notificationSettings: action.payload };
     
+    case 'SET_AUTHENTICATED':
+      return { ...state, isAuthenticated: action.payload };
+    
+    case 'SET_USER':
+      return { ...state, user: action.payload };
+    
+    case 'LOGOUT':
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        transactions: [],
+        categories: [],
+        budgets: [],
+        userProfile: {
+          name: 'Usuario',
+          email: '',
+          currency: 'USD',
+        },
+        notificationSettings: {
+          budgetReminders: true,
+          weeklySummary: false,
+          savingGoals: true,
+        },
+      };
+    
     default:
       return state;
   }
@@ -198,78 +232,68 @@ const AppContext = createContext<{
   getTransactionsByMonth: (year: number, month: number) => Transaction[];
   getTransactionsByCategory: (categoryId: string) => Transaction[];
   getTotalByCategory: (categoryId: string, year?: number, month?: number) => number;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (userData: any) => Promise<boolean>;
+  logout: () => void;
+  loadUserData: () => Promise<void>;
 } | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Load data from localStorage on mount
+  // Check authentication and load user data on mount
   useEffect(() => {
-    const loadData = async () => {
+    const initializeApp = async () => {
       dispatch({ type: 'SET_LOADING', payload: true });
       
-      // Simulate loading time for better UX
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
       try {
-        const savedTransactions = localStorage.getItem('transactions');
-        const savedCategories = localStorage.getItem('categories');
-        const savedBudgets = localStorage.getItem('budgets');
-        const savedUserProfile = localStorage.getItem('userProfile');
-        const savedNotificationSettings = localStorage.getItem('notificationSettings');
-
-        if (savedTransactions) {
-          dispatch({ type: 'SET_TRANSACTIONS', payload: JSON.parse(savedTransactions) });
-        }
-
-        // Categories: merge saved with defaults so app is always usable
-        try {
-          if (savedCategories) {
-            const parsed: Category[] = JSON.parse(savedCategories);
-            const byName = new Set(parsed.map(c => c.name.toLowerCase()));
-            const merged: Category[] = [
-              ...parsed,
-              ...defaultCategories.filter(c => !byName.has(c.name.toLowerCase())),
-            ];
-            dispatch({ type: 'SET_CATEGORIES', payload: merged });
+        // Check if user is authenticated
+        if (apiService.isAuthenticated()) {
+          const response = await apiService.getCurrentUser();
+          if (response.data?.user) {
+            dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+            dispatch({ type: 'SET_USER', payload: response.data.user });
+            await loadUserData();
           } else {
-            dispatch({ type: 'SET_CATEGORIES', payload: defaultCategories });
+            // Token is invalid, clear it
+            apiService.clearToken();
           }
-        } catch {
-          dispatch({ type: 'SET_CATEGORIES', payload: defaultCategories });
-        }
-
-        if (savedBudgets) {
-          dispatch({ type: 'SET_BUDGETS', payload: JSON.parse(savedBudgets) });
-        }
-
-        if (savedUserProfile) {
-          dispatch({ type: 'UPDATE_USER_PROFILE', payload: JSON.parse(savedUserProfile) });
-        }
-
-        if (savedNotificationSettings) {
-          dispatch({ type: 'UPDATE_NOTIFICATION_SETTINGS', payload: JSON.parse(savedNotificationSettings) });
         }
       } catch (error) {
-        console.error('Error loading data from localStorage:', error);
+        console.error('Error initializing app:', error);
+        apiService.clearToken();
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     };
 
-    loadData();
+    initializeApp();
   }, []);
 
-  // Save data to localStorage whenever state changes
-  useEffect(() => {
-    if (!state.isLoading) {
-      localStorage.setItem('transactions', JSON.stringify(state.transactions));
-      localStorage.setItem('categories', JSON.stringify(state.categories));
-      localStorage.setItem('budgets', JSON.stringify(state.budgets));
-      localStorage.setItem('userProfile', JSON.stringify(state.userProfile));
-      localStorage.setItem('notificationSettings', JSON.stringify(state.notificationSettings));
+  // Load user data from backend
+  const loadUserData = useCallback(async () => {
+    try {
+      const [transactionsRes, categoriesRes, budgetsRes] = await Promise.all([
+        apiService.getTransactions({ limit: 1000 }),
+        apiService.getCategories(),
+        apiService.getBudgets({ limit: 1000 })
+      ]);
+
+      if (transactionsRes.data?.transactions) {
+        dispatch({ type: 'SET_TRANSACTIONS', payload: transactionsRes.data.transactions });
+      }
+
+      if (categoriesRes.data?.categories) {
+        dispatch({ type: 'SET_CATEGORIES', payload: categoriesRes.data.categories });
+      }
+
+      if (budgetsRes.data?.budgets) {
+        dispatch({ type: 'SET_BUDGETS', payload: budgetsRes.data.budgets });
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
     }
-  }, [state.transactions, state.categories, state.budgets, state.userProfile, state.notificationSettings, state.isLoading]);
+  }, []);
 
   // Recalculate budget spent based on transactions within budget date range
   useEffect(() => {
@@ -376,6 +400,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }, 0);
   }, [getTransactionsByCategory]);
 
+  // Authentication functions
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+    try {
+      const response = await apiService.login({ email, password });
+      if (response.data?.user) {
+        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+        dispatch({ type: 'SET_USER', payload: response.data.user });
+        await loadUserData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
+  }, [loadUserData]);
+
+  const register = useCallback(async (userData: any): Promise<boolean> => {
+    try {
+      const response = await apiService.register(userData);
+      if (response.data?.user) {
+        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+        dispatch({ type: 'SET_USER', payload: response.data.user });
+        await loadUserData();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Register error:', error);
+      return false;
+    }
+  }, [loadUserData]);
+
+  const logout = useCallback(() => {
+    apiService.clearToken();
+    dispatch({ type: 'LOGOUT' });
+  }, []);
+
   const contextValue = useMemo(() => ({
     state,
     dispatch,
@@ -383,7 +445,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     getTransactionsByMonth,
     getTransactionsByCategory,
     getTotalByCategory,
-  }), [state, dispatch, getDashboardStats, getTransactionsByMonth, getTransactionsByCategory, getTotalByCategory]);
+    login,
+    register,
+    logout,
+    loadUserData,
+  }), [state, dispatch, getDashboardStats, getTransactionsByMonth, getTransactionsByCategory, getTotalByCategory, login, register, logout, loadUserData]);
 
   return (
     <AppContext.Provider value={contextValue}>

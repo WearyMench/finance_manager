@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { useLocation } from 'react-router-dom';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import apiService from '../services/api';
 
 // Types
 interface Transaction {
@@ -58,36 +59,56 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterPaymentMethod, setFilterPaymentMethod] = useState<string>('all');
 
-  const handleAddTransaction = useCallback((transaction: Omit<Transaction, 'id' | 'createdAt'>) => {
-    const newTransaction: Transaction = {
-      ...transaction,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString()
-    };
-    
-    dispatch({
-      type: 'ADD_TRANSACTION',
-      payload: newTransaction
-    });
-    
-    setShowForm(false);
+  const handleAddTransaction = useCallback(async (transaction: Omit<Transaction, 'id' | 'createdAt'>) => {
+    try {
+      const response = await apiService.createTransaction(transaction);
+      if (response.data?.transaction) {
+        dispatch({
+          type: 'ADD_TRANSACTION',
+          payload: response.data.transaction
+        });
+        setShowForm(false);
+      } else {
+        console.error('Error creando transacción:', response.error);
+      }
+    } catch (error) {
+      console.error('Error creando transacción:', error);
+    }
   }, [dispatch]);
 
-  const handleEditTransaction = useCallback((transaction: Transaction) => {
-    dispatch({
-      type: 'UPDATE_TRANSACTION',
-      payload: transaction
-    });
-    
-    setEditingTransaction(undefined);
+  const handleEditTransaction = useCallback(async (transaction: Transaction) => {
+    try {
+      const response = await apiService.updateTransaction(transaction.id, transaction);
+      if (response.data?.transaction) {
+        dispatch({
+          type: 'UPDATE_TRANSACTION',
+          payload: response.data.transaction
+        });
+        setShowForm(false);
+        setEditingTransaction(undefined);
+      } else {
+        console.error('Error actualizando transacción:', response.error);
+      }
+    } catch (error) {
+      console.error('Error actualizando transacción:', error);
+    }
   }, [dispatch]);
 
-  const handleDeleteTransaction = useCallback((id: string) => {
+  const handleDeleteTransaction = useCallback(async (id: string) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar esta transacción?')) {
-      dispatch({
-        type: 'DELETE_TRANSACTION',
-        payload: id
-      });
+      try {
+        const response = await apiService.deleteTransaction(id);
+        if (response.data || !response.error) {
+          dispatch({
+            type: 'DELETE_TRANSACTION',
+            payload: id
+          });
+        } else {
+          console.error('Error eliminando transacción:', response.error);
+        }
+      } catch (error) {
+        console.error('Error eliminando transacción:', error);
+      }
     }
   }, [dispatch]);
 
@@ -357,7 +378,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
             >
               <option value="all">Todas</option>
               {state.categories.map(category => (
-                <option key={category.id} value={category.id}>
+                <option key={category._id || category.id} value={category._id || category.id}>
                   {category.name}
                 </option>
               ))}
@@ -445,7 +466,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
         ) : (
           <div className="transaction-list">
             {filteredAndSortedTransactions.map((transaction) => {
-              const category = state.categories.find(c => c.id === transaction.category);
+              const category = state.categories.find(c => (c._id || c.id) === transaction.category);
               
               return (
                 <div 

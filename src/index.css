@@ -242,8 +242,14 @@ html[data-theme="dark"] .main-header {
 }
 
 html[data-theme="dark"] .nav-item-description,
-html[data-theme="dark"] .card-title,
-html[data-theme="dark"] .card-description,
+html[data-theme="dark"] .card-title {
+  color: var(--color-neutral-100);
+}
+
+html[data-theme="dark"] .card-description {
+  color: var(--color-neutral-400);
+}
+
 html[data-theme="dark"] .text-high-contrast,
 html[data-theme="dark"] .text-medium-contrast,
 html[data-theme="dark"] .text-subtle {
@@ -365,9 +371,51 @@ html[data-theme="dark"] .modal-content {
 /* Estados vacíos y detalles en oscuro */
 html[data-theme="dark"] .empty-state-title,
 html[data-theme="dark"] .empty-state-description,
-html[data-theme="dark"] .transaction-details,
+html[data-theme="dark"] .transaction-item {
+  background: var(--gradient-card);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .transaction-description {
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .transaction-details {
+  color: #cbd5e0 !important;
+}
+
 html[data-theme="dark"] .transaction-category {
-  color: var(--color-neutral-800) !important;
+  background: #4a5568 !important;
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .transaction-payment {
+  color: #cbd5e0 !important;
+}
+
+/* Estilos específicos para transacciones individuales */
+.transaction-item .transaction-description {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] .transaction-item .transaction-description {
+  color: #f7fafc !important;
+}
+
+.transaction-item .transaction-details {
+  color: #4a5568 !important;
+}
+
+html[data-theme="dark"] .transaction-item .transaction-details {
+  color: #cbd5e0 !important;
+}
+
+.transaction-item .transaction-payment {
+  color: #4a5568 !important;
+}
+
+html[data-theme="dark"] .transaction-item .transaction-payment {
+  color: #cbd5e0 !important;
 }
 
 html {
@@ -609,7 +657,23 @@ body {
 }
 
 .header-title {
-  color: var(--color-neutral-800) !important;
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] .header-title {
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .header-title h1 {
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .text-high-contrast {
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .text-medium-contrast {
+  color: #cbd5e0 !important;
 }
 
 .header-title h1 {
@@ -622,8 +686,12 @@ body {
 .header-title p {
   font-size: 0.875rem;
   opacity: 0.8;
-  color: var(--color-neutral-800) !important;
+  color: #4a5568 !important;
   margin: 0;
+}
+
+html[data-theme="dark"] .header-title p {
+  color: #cbd5e0 !important;
 }
 
 .header-actions {
@@ -678,14 +746,18 @@ body {
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-neutral-800) !important;
+  color: #1a202c !important;
   margin: 0 0 var(--space-2) 0;
 }
 
 .card-description {
-  color: var(--color-neutral-800) !important;
+  color: #4a5568 !important;
   font-size: 0.875rem;
   margin: 0;
+}
+
+html[data-theme="dark"] .card-description {
+  color: #cbd5e0 !important;
 }
 
 /* Badge de conteo en Recientes (amarillo muy vivo -> neutro) */
@@ -1068,14 +1140,22 @@ html[data-theme="dark"]
 .chart-title-text h3 {
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--color-neutral-800) !important;
+  color: #1a202c !important;
   margin: 0;
+}
+
+html[data-theme="dark"] .chart-title-text h3 {
+  color: #f7fafc !important;
 }
 
 .chart-title-text p {
   font-size: 0.875rem;
-  color: var(--color-neutral-800) !important;
+  color: #4a5568 !important;
   margin: 0;
+}
+
+html[data-theme="dark"] .chart-title-text p {
+  color: #cbd5e0 !important;
 }
 
 .chart-legend {
@@ -1111,9 +1191,9 @@ html[data-theme="dark"]
 }
 
 .transaction-item {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--gradient-card);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
   border-radius: var(--border-radius-lg);
   padding: var(--space-5);
   box-shadow: var(--shadow-md);
@@ -1168,7 +1248,7 @@ html[data-theme="dark"]
 
 .transaction-description {
   font-weight: 600;
-  color: var(--color-neutral-800) !important;
+  color: #1a202c !important;
   margin-bottom: var(--space-1);
 }
 
@@ -1177,7 +1257,7 @@ html[data-theme="dark"]
   align-items: center;
   gap: var(--space-3);
   font-size: 0.75rem;
-  color: var(--color-neutral-800) !important;
+  color: var(--color-neutral-600);
 }
 
 .transaction-category {
@@ -1208,7 +1288,7 @@ html[data-theme="dark"]
 
 .transaction-payment {
   font-size: 0.75rem;
-  color: var(--color-neutral-800) !important;
+  color: #4a5568 !important;
   font-weight: 500;
 }
 
@@ -1237,13 +1317,107 @@ html[data-theme="dark"]
 .empty-state-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-neutral-800) !important;
+  color: #1a202c !important;
   margin-bottom: var(--space-2);
 }
 
+html[data-theme="dark"] .empty-state-title {
+  color: #f7fafc !important;
+}
+
+/* Estilos específicos para títulos de estados vacíos */
+.empty-state-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] .empty-state-title {
+  color: #f7fafc !important;
+}
+
+/* Asegurar que los títulos de estados vacíos se vean correctamente */
+h3.empty-state-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] h3.empty-state-title {
+  color: #f7fafc !important;
+}
+
+/* Estilos ultra específicos para componentes de transacciones */
+.recent-transactions .card-title,
+.transactions-list .card-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] .recent-transactions .card-title,
+html[data-theme="dark"] .transactions-list .card-title {
+  color: #f7fafc !important;
+}
+
+.recent-transactions .empty-state-title,
+.transactions-list .empty-state-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] .recent-transactions .empty-state-title,
+html[data-theme="dark"] .transactions-list .empty-state-title {
+  color: #f7fafc !important;
+}
+
+/* Estilos con máxima especificidad para títulos de transacciones */
+div[class*="recent"] h3.card-title,
+div[class*="transaction"] h2.card-title,
+div[class*="transaction"] h3.card-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] div[class*="recent"] h3.card-title,
+html[data-theme="dark"] div[class*="transaction"] h2.card-title,
+html[data-theme="dark"] div[class*="transaction"] h3.card-title {
+  color: #f7fafc !important;
+}
+
+div[class*="recent"] h3.empty-state-title,
+div[class*="transaction"] h3.empty-state-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] div[class*="recent"] h3.empty-state-title,
+html[data-theme="dark"] div[class*="transaction"] h3.empty-state-title {
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .card-title {
+  color: #f7fafc !important;
+}
+
+/* Estilos específicos para títulos de transacciones */
+.card-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] .card-title {
+  color: #f7fafc !important;
+}
+
+/* Asegurar que los títulos de transacciones se vean correctamente */
+h2.card-title,
+h3.card-title {
+  color: #1a202c !important;
+}
+
+html[data-theme="dark"] h2.card-title,
+html[data-theme="dark"] h3.card-title {
+  color: #f7fafc !important;
+}
+
 .empty-state-description {
-  color: var(--color-neutral-800) !important;
+  color: #4a5568 !important;
   margin-bottom: var(--space-6);
+}
+
+html[data-theme="dark"] .empty-state-description {
+  color: #cbd5e0 !important;
 }
 
 /* Modales */
@@ -1284,8 +1458,16 @@ html[data-theme="dark"]
 .modal-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-neutral-800) !important;
+  color: #1a202c !important;
   margin: 0;
+}
+
+html[data-theme="dark"] .modal-title {
+  color: #f7fafc !important;
+}
+
+html[data-theme="dark"] .modal-title h2 {
+  color: #f7fafc !important;
 }
 
 .modal-close {
@@ -1482,6 +1664,29 @@ html[data-theme="dark"]
 }
 
 /* Responsive */
+/* Notificaciones Toast */
+.notification-toast {
+  font-family: var(--font-family);
+  letter-spacing: 0.01em;
+}
+
+.notification-toast.success {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.notification-toast.error {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.notification-toast.info {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.notification-toast:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 768px) {
   /* Dashboard: mejorar jerarquía en mobile */
   .dashboard-header {
@@ -1819,5 +2024,179 @@ select:focus-visible {
   select.form-select option {
     background: #1a202c;
     color: #ffffff;
+  }
+}
+
+/* Landing Page Styles */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.landing-hero {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.landing-feature {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.landing-feature:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.landing-feature:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.landing-feature:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.landing-feature:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.landing-feature:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.landing-feature:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.landing-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+html[data-theme="dark"] .glass-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Landing Page Dark Theme Support */
+html[data-theme="dark"] .landing-page {
+  background: linear-gradient(
+    135deg,
+    #1a1a2e 0%,
+    #16213e 50%,
+    #0f3460 100%
+  ) !important;
+}
+
+html[data-theme="dark"] .landing-stats {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(8px);
+}
+
+html[data-theme="dark"] .landing-feature-card {
+  background: var(--color-neutral-800) !important;
+  border-color: var(--color-neutral-700) !important;
+}
+
+html[data-theme="dark"] .landing-feature-card:hover {
+  background: var(--color-neutral-750) !important;
+  border-color: var(--color-neutral-600) !important;
+}
+
+/* Theme Toggle Button Dark Mode */
+html[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+html[data-theme="dark"] .theme-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Logo Animation */
+@keyframes logoGlow {
+  0%,
+  100% {
+    box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(14, 165, 233, 0.5),
+      0 0 20px rgba(14, 165, 233, 0.2);
+  }
+}
+
+.logo-icon {
+  animation: logoGlow 2s ease-in-out infinite;
+}
+
+/* Gradient text fixes */
+.gradient-text {
+  background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #0ea5e9; /* Fallback color */
+  display: inline-block;
+}
+
+/* Ensure proper rendering */
+.gradient-text * {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Fallback for browsers that don't support background-clip: text */
+@supports not (-webkit-background-clip: text) {
+  .gradient-text {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #0ea5e9 !important;
+  }
+
+  .gradient-text * {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #0ea5e9 !important;
   }
 }

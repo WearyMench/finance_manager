@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Search,
   Moon,
-  Sun
+  Sun,
+  LogOut
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -25,16 +26,39 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { getDashboardStats } = useApp();
+  const { getDashboardStats, state, logout } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const unreadCount = 0;
   const [searchOpen, setSearchOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
+
+  const handleLogout = () => {
+    logout();
+    setProfileDropdownOpen(false);
+  };
+
+  // Cerrar dropdown cuando se hace clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileDropdownOpen) {
+        const target = event.target as Element;
+        if (!target.closest('[data-profile-dropdown]')) {
+          setProfileDropdownOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [profileDropdownOpen]);
 
   const navItems = [
     { 
@@ -350,8 +374,9 @@ export default function Layout({ children }: LayoutProps) {
               )}
 
               {/* Perfil de usuario */}
-              <Link 
-                to="/settings"
+            <div style={{ position: 'relative' }} data-profile-dropdown>
+              <button
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 className="btn btn-ghost"
                 style={{ 
                   padding: 'var(--space-2)', 
@@ -360,25 +385,94 @@ export default function Layout({ children }: LayoutProps) {
                   alignItems: 'center',
                   gap: 'var(--space-2)'
                 }}
-                title="Perfil"
+                title={state.user?.name || 'Usuario'}
               >
-              <div 
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  background: 'var(--gradient-primary)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-neutral-800)',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
-              >
-                <User size={16} />
-              </div>
-                <span style={{ display: 'none' }}>Usuario</span>
-              </Link>
+                  <div 
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      background: 'var(--gradient-primary)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--color-neutral-800)',
+                      boxShadow: 'var(--shadow-sm)'
+                    }}
+                  >
+                    <User size={16} />
+                  </div>
+                  <span style={{ display: 'none' }}>{state.user?.name || 'Usuario'}</span>
+                </button>
+                
+              {/* Dropdown menu */}
+              {profileDropdownOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    right: 0,
+                    background: 'var(--gradient-card)',
+                    borderRadius: 'var(--border-radius-lg)',
+                    boxShadow: 'var(--shadow-xl)',
+                    border: '1px solid rgba(168, 85, 247, 0.1)',
+                    minWidth: '200px',
+                    zIndex: 1000,
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{ padding: 'var(--space-3)' }}>
+                    <div style={{ 
+                      fontSize: '0.875rem', 
+                      fontWeight: '600', 
+                      color: 'var(--color-neutral-800)',
+                      marginBottom: 'var(--space-1)'
+                    }}>
+                      {state.user?.name || 'Usuario'}
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.75rem', 
+                      color: 'var(--color-neutral-600)' 
+                    }}>
+                      {state.user?.email || ''}
+                    </div>
+                  </div>
+                  
+                  <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.1)' }}>
+                    <Link
+                      to="/settings"
+                      className="btn btn-ghost"
+                      style={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        borderRadius: 0,
+                        padding: 'var(--space-3)',
+                        fontSize: '0.875rem'
+                      }}
+                    >
+                      <Settings size={16} style={{ marginRight: 'var(--space-2)' }} />
+                      Configuración
+                    </Link>
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="btn btn-ghost"
+                      style={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        borderRadius: 0,
+                        padding: 'var(--space-3)',
+                        fontSize: '0.875rem',
+                        color: 'var(--color-error-600)'
+                      }}
+                    >
+                      <LogOut size={16} style={{ marginRight: 'var(--space-2)' }} />
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             </div>
           </div>
         </header>

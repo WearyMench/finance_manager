@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import apiService from '../services/api';
 import { 
   Plus, 
   Target, 
@@ -41,9 +42,20 @@ export default function Budgets() {
     setShowForm(true);
   };
 
-  const handleDeleteBudget = (id: string) => {
+  const handleDeleteBudget = async (id: string) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este presupuesto?')) {
-      dispatch({ type: 'DELETE_BUDGET', payload: id });
+      try {
+        const response = await apiService.deleteBudget(id);
+        if (response.data || !response.error) {
+          dispatch({ type: 'DELETE_BUDGET', payload: id });
+        } else {
+          console.error('Error deleting budget:', response.error);
+          alert('Error al eliminar el presupuesto');
+        }
+      } catch (error) {
+        console.error('Error deleting budget:', error);
+        alert('Error al eliminar el presupuesto');
+      }
     }
   };
 
@@ -52,26 +64,33 @@ export default function Budgets() {
     setEditingBudget(undefined);
   };
 
-  const handleSaveBudget = (budgetData: Omit<Budget, 'id' | 'spent'>) => {
-    const categorySpent = 0; // Se calculará automáticamente
-    
-    if (editingBudget) {
-      dispatch({
-        type: 'UPDATE_BUDGET',
-        payload: { ...budgetData, id: editingBudget.id, spent: categorySpent }
-      });
-    } else {
-      dispatch({
-        type: 'ADD_BUDGET',
-        payload: { 
-          ...budgetData, 
-          id: Date.now().toString(), 
-          spent: categorySpent 
+  const handleSaveBudget = async (budgetData: Omit<Budget, 'id' | 'spent'>) => {
+    try {
+      if (editingBudget) {
+        // Update existing budget
+        const response = await apiService.updateBudget(editingBudget.id, budgetData);
+        if (response.data?.budget) {
+          dispatch({
+            type: 'UPDATE_BUDGET',
+            payload: response.data.budget
+          });
         }
-      });
+      } else {
+        // Create new budget
+        const response = await apiService.createBudget(budgetData);
+        if (response.data?.budget) {
+          dispatch({
+            type: 'ADD_BUDGET',
+            payload: response.data.budget
+          });
+        }
+      }
+      
+      handleCloseForm();
+    } catch (error) {
+      console.error('Error saving budget:', error);
+      alert('Error al guardar el presupuesto');
     }
-    
-    handleCloseForm();
   };
 
   // Calculate budget statistics
@@ -544,9 +563,11 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Auto-seleccionar primera categoría si no hay seleccionada
-  if (!formData.category && categories.length > 0) {
-    setFormData(prev => ({ ...prev, category: categories[0].id }));
-  }
+  useEffect(() => {
+    if (!formData.category && categories.length > 0) {
+      setFormData(prev => ({ ...prev, category: categories[0]._id || categories[0].id }));
+    }
+  }, [formData.category, categories]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -609,7 +630,7 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
             >
               <option value="">Selecciona una categoría</option>
               {categories.map(category => (
-                <option key={category.id} value={category.id}>
+                <option key={category._id || category.id} value={category._id || category.id}>
                   {category.name}
                 </option>
               ))}

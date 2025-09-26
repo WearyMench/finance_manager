@@ -72,7 +72,7 @@ const RecentTransactions = memo(function RecentTransactions({
       
       <div className="transaction-list">
         {transactions.slice(0, 5).map((transaction) => {
-          const category = categories.find(c => c.id === transaction.category);
+          const category = categories.find(c => (c._id || c.id) === transaction.category);
           
           return (
             <div 

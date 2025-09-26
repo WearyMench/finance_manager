@@ -6,12 +6,20 @@ import TransactionsList from './components/TransactionsList';
 import Budgets from './components/Budgets';
 import Settings from './components/Settings';
 import LoadingScreen from './components/LoadingScreen';
+import AuthModal from './components/AuthModal';
+import LandingPage from './components/LandingPage';
+import { useState } from 'react';
 
 function AppContent() {
-  const { state } = useApp();
+  const { state, login, register } = useApp();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   if (state.isLoading) {
     return <LoadingScreen />;
+  }
+
+  if (!state.isAuthenticated) {
+    return <LandingPage />;
   }
 
   return (

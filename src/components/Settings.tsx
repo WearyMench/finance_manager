@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import apiService from '../services/api';
 import { 
   Plus, 
   Edit, 
@@ -35,10 +36,24 @@ export default function Settings() {
   const [editingCategory, setEditingCategory] = useState<Category | undefined>();
   const [activeTab, setActiveTab] = useState<'categories' | 'profile' | 'notifications' | 'data'>('categories');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState({
+    profile: false,
+    notifications: false,
+    category: false
+  });
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error' | 'info';
+    message: string;
+    show: boolean;
+  }>({
+    type: 'info',
+    message: '',
+    show: false
+  });
   const [profile, setProfile] = useState({
-    name: state.userProfile.name,
-    email: state.userProfile.email,
-    currency: state.userProfile.currency,
+    name: state.user?.name || state.userProfile.name,
+    email: state.user?.email || state.userProfile.email,
+    currency: state.user?.currency || state.userProfile.currency,
   });
   const [notif, setNotif] = useState({
     budgetReminders: state.notificationSettings.budgetReminders,
@@ -46,12 +61,73 @@ export default function Settings() {
     savingGoals: state.notificationSettings.savingGoals,
   });
 
-  const handleSaveProfile = () => {
-    dispatch({ type: 'UPDATE_USER_PROFILE', payload: profile as any });
+  // Actualizar perfil cuando cambien los datos del usuario
+  useEffect(() => {
+    setProfile({
+      name: state.user?.name || state.userProfile.name,
+      email: state.user?.email || state.userProfile.email,
+      currency: state.user?.currency || state.userProfile.currency,
+    });
+  }, [state.user, state.userProfile]);
+
+  // Actualizar notificaciones cuando cambien los datos del usuario
+  useEffect(() => {
+    if (state.user?.notificationSettings) {
+      setNotif({
+        budgetReminders: state.user.notificationSettings.budgetReminders,
+        weeklySummary: state.user.notificationSettings.weeklySummary,
+        savingGoals: state.user.notificationSettings.savingGoals,
+      });
+    }
+  }, [state.user?.notificationSettings]);
+
+  const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
+    setNotification({ type, message, show: true });
+    setTimeout(() => {
+      setNotification(prev => ({ ...prev, show: false }));
+    }, 4000);
   };
 
-  const handleSaveNotifications = () => {
-    dispatch({ type: 'UPDATE_NOTIFICATION_SETTINGS', payload: notif as any });
+  const handleSaveProfile = async () => {
+    setIsLoading(prev => ({ ...prev, profile: true }));
+    try {
+      const response = await apiService.updateUserProfile(profile);
+      if (response.data?.user) {
+        // Actualizar tanto el perfil como el usuario en el estado
+        dispatch({ type: 'UPDATE_USER_PROFILE', payload: response.data.user });
+        dispatch({ type: 'SET_USER', payload: response.data.user });
+        showNotification('success', 'Perfil actualizado exitosamente');
+      } else {
+        console.error('Error actualizando perfil:', response.error);
+        showNotification('error', 'Error al actualizar el perfil');
+      }
+    } catch (error) {
+      console.error('Error actualizando perfil:', error);
+      showNotification('error', 'Error al actualizar el perfil');
+    } finally {
+      setIsLoading(prev => ({ ...prev, profile: false }));
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setIsLoading(prev => ({ ...prev, notifications: true }));
+    try {
+      const response = await apiService.updateNotificationSettings(notif);
+      if (response.data?.user) {
+        // Actualizar tanto las notificaciones como el usuario en el estado
+        dispatch({ type: 'UPDATE_NOTIFICATION_SETTINGS', payload: response.data.user.notificationSettings });
+        dispatch({ type: 'SET_USER', payload: response.data.user });
+        showNotification('success', 'Preferencias de notificación actualizadas exitosamente');
+      } else {
+        console.error('Error actualizando notificaciones:', response.error);
+        showNotification('error', 'Error al actualizar las preferencias de notificación');
+      }
+    } catch (error) {
+      console.error('Error actualizando notificaciones:', error);
+      showNotification('error', 'Error al actualizar las preferencias de notificación');
+    } finally {
+      setIsLoading(prev => ({ ...prev, notifications: false }));
+    }
   };
 
   const escapeCSV = (value: any) => {
@@ -209,26 +285,52 @@ export default function Settings() {
     setShowCategoryForm(true);
   };
 
-  const handleDeleteCategory = (id: string) => {
+  const handleDeleteCategory = async (id: string) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
-      dispatch({ type: 'DELETE_CATEGORY', payload: id });
+      try {
+        const response = await apiService.deleteCategory(id);
+        if (response.data || !response.error) {
+          dispatch({ type: 'DELETE_CATEGORY', payload: id });
+          showNotification('success', 'Categoría eliminada exitosamente');
+        } else {
+          console.error('Error eliminando categoría:', response.error);
+          showNotification('error', 'Error al eliminar la categoría: ' + (response.error || 'Error desconocido'));
+        }
+      } catch (error) {
+        console.error('Error eliminando categoría:', error);
+        showNotification('error', 'Error al eliminar la categoría: ' + (error.message || 'Error desconocido'));
+      }
     }
-  };
+  }; 
 
-  const handleSaveCategory = (categoryData: Omit<Category, 'id'>) => {
-    if (editingCategory) {
-      dispatch({
-        type: 'UPDATE_CATEGORY',
-        payload: { ...categoryData, id: editingCategory.id } as any
-      });
-    } else {
-      dispatch({
-        type: 'ADD_CATEGORY',
-        payload: { ...categoryData, id: Date.now().toString() } as any
-      });
+  const handleSaveCategory = async (categoryData: Omit<Category, 'id'>) => {
+    try {
+      
+      if (editingCategory) {
+        // Update existing category
+        const response = await apiService.updateCategory(editingCategory.id, categoryData);
+        if (response.data?.category) {
+          dispatch({
+            type: 'UPDATE_CATEGORY',
+            payload: response.data.category
+          });
+        }
+      } else {
+        // Create new category
+        const response = await apiService.createCategory(categoryData);
+        if (response.data?.category) {
+          dispatch({
+            type: 'ADD_CATEGORY',
+            payload: response.data.category
+          });
+        }
+      }
+      setShowCategoryForm(false);
+      setEditingCategory(undefined);
+    } catch (error) {
+      console.error('Error saving category:', error);
+      alert('Error al guardar la categoría');
     }
-    setShowCategoryForm(false);
-    setEditingCategory(undefined);
   };
 
   const incomeCategories = state.categories.filter(cat => cat.type === 'income');
@@ -402,7 +504,7 @@ export default function Settings() {
               >
                 {incomeCategories.map((category) => (
                   <CategoryCard
-                    key={category.id}
+                    key={category._id || category.id}
                     category={category}
                     onEdit={handleEditCategory}
                     onDelete={handleDeleteCategory}
@@ -492,7 +594,7 @@ export default function Settings() {
               >
                 {expenseCategories.map((category) => (
                   <CategoryCard
-                    key={category.id}
+                    key={category._id || category.id}
                     category={category}
                     onEdit={handleEditCategory}
                     onDelete={handleDeleteCategory}
@@ -569,9 +671,14 @@ export default function Settings() {
               </select>
             </div>
 
-            <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }} onClick={handleSaveProfile}>
+            <button 
+              className="btn btn-primary" 
+              style={{ alignSelf: 'flex-start' }} 
+              onClick={handleSaveProfile}
+              disabled={isLoading.profile}
+            >
               <Save size={16} />
-              Guardar Cambios
+              {isLoading.profile ? 'Guardando...' : 'Guardar Cambios'}
             </button>
           </div>
         </div>
@@ -629,9 +736,13 @@ export default function Settings() {
               onChange={(v: boolean) => setNotif({ ...notif, savingGoals: v })}
             />
             <div>
-              <button className="btn btn-primary" onClick={handleSaveNotifications}>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleSaveNotifications}
+                disabled={isLoading.notifications}
+              >
                 <Save size={16} />
-                Guardar preferencias
+                {isLoading.notifications ? 'Guardando...' : 'Guardar preferencias'}
               </button>
             </div>
           </div>
@@ -776,6 +887,97 @@ export default function Settings() {
           </div>
         </div>
       )}
+
+      {/* Notificación Toast */}
+      {notification.show && (
+        <div
+          className={`notification-toast ${notification.type}`}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '16px 20px',
+            borderRadius: '12px',
+            color: 'white',
+            fontWeight: '500',
+            fontSize: '14px',
+            zIndex: 1000,
+            maxWidth: '350px',
+            minWidth: '280px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+            backgroundColor: notification.type === 'success' ? '#059669' : 
+                           notification.type === 'error' ? '#DC2626' : '#2563EB',
+            transform: 'translateX(0)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            animation: 'slideInRight 0.3s ease-out'
+          }}
+        >
+          <div
+            style={{
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}
+          >
+            {notification.type === 'success' && (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            )}
+            {notification.type === 'error' && (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            )}
+            {notification.type === 'info' && (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+            )}
+          </div>
+          <span style={{ lineHeight: '1.4', flex: 1 }}>
+            {notification.message}
+          </span>
+          <button
+            onClick={() => setNotification(prev => ({ ...prev, show: false }))}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255, 255, 255, 0.8)',
+              cursor: 'pointer',
+              padding: '4px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              flexShrink: 0
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -877,7 +1079,7 @@ function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
             <Edit size={14} />
           </button>
           <button
-            onClick={() => onDelete(category.id)}
+            onClick={() => onDelete(category._id || category.id)}
             className="btn btn-error"
             style={{ padding: 'var(--space-2)', minWidth: 'auto' }}
             title="Eliminar categoría"
@@ -997,6 +1199,7 @@ function CategoryForm({ category, onClose, onSave }: CategoryFormProps) {
     name: category?.name || '',
     type: category?.type || 'expense',
     icon: category?.icon || 'Package',
+    color: category?.color || '#6B7280',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1020,6 +1223,10 @@ function CategoryForm({ category, onClose, onSave }: CategoryFormProps) {
       newErrors.icon = 'El ícono es requerido';
     }
 
+    if (formData.color && !/^#[0-9A-F]{6}$/i.test(formData.color)) {
+      newErrors.color = 'El color debe ser un código hexadecimal válido';
+    }
+
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -1027,6 +1234,7 @@ function CategoryForm({ category, onClose, onSave }: CategoryFormProps) {
         name: formData.name.trim(),
         type: formData.type as 'income' | 'expense',
         icon: formData.icon,
+        ...(formData.color && { color: formData.color }),
       });
     }
   };
@@ -1117,6 +1325,39 @@ function CategoryForm({ category, onClose, onSave }: CategoryFormProps) {
               >
                 <AlertCircle size={14} />
                 {errors.name}
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <Palette size={16} style={{ marginRight: 'var(--space-2)' }} />
+              Color (opcional)
+            </label>
+            <input
+              type="color"
+              className="form-input"
+              value={formData.color}
+              onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+              style={{
+                borderColor: errors.color ? 'var(--color-error-500)' : undefined,
+                height: '48px',
+                padding: 'var(--space-2)'
+              }}
+            />
+            {errors.color && (
+              <div 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-1)',
+                  marginTop: 'var(--space-1)',
+                  color: 'var(--color-error-600)',
+                  fontSize: '0.75rem'
+                }}
+              >
+                <AlertCircle size={14} />
+                {errors.color}
               </div>
             )}
           </div>

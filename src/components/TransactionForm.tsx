@@ -1,4 +1,4 @@
-import { useState, memo, useCallback, useMemo } from 'react';
+import { useState, memo, useCallback, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { X, Calendar, Tag, CreditCard, DollarSign, Save, AlertCircle } from 'lucide-react';
 
@@ -32,6 +32,18 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const availableCategories = useMemo(() => {
+    return state.categories.filter(category => category.type === formData.type);
+  }, [state.categories, formData.type]);
+
+  // Auto-seleccionar primera categoría si no hay seleccionada
+  useEffect(() => {
+    if (!formData.category && availableCategories.length > 0) {
+      const selectedCategory = availableCategories[0]._id || availableCategories[0].id;
+      setFormData(prev => ({ ...prev, category: selectedCategory }));
+    }
+  }, [formData.category, availableCategories]);
 
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
@@ -85,29 +97,6 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
     }
   }, [errors]);
 
-  const availableCategories = useMemo(() => {
-    return state.categories.filter(category => category.type === formData.type);
-  }, [state.categories, formData.type]);
-
-  // Auto-seleccionar la primera categoría disponible cuando cambie el tipo o carguen categorías
-  const ensureCategorySelected = useCallback(() => {
-    if (!formData.category && availableCategories.length > 0) {
-      setFormData(prev => ({ ...prev, category: availableCategories[0].id }));
-    } else if (
-      formData.category &&
-      availableCategories.length > 0 &&
-      !availableCategories.some(c => c.id === formData.category)
-    ) {
-      // Si la categoría actual ya no es válida para el tipo, seleccionar la primera válida
-      setFormData(prev => ({ ...prev, category: availableCategories[0].id }));
-    }
-  }, [formData.category, availableCategories]);
-
-  useMemo(() => {
-    ensureCategorySelected();
-    // return value not used; using useMemo to run after availableCategories changes without extra re-render
-    return null;
-  }, [ensureCategorySelected]);
 
   const paymentMethods = [
     { value: 'cash', label: 'Efectivo' },
@@ -267,7 +256,7 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
             >
               <option value="">Selecciona una categoría</option>
               {availableCategories.map(category => (
-                <option key={category.id} value={category.id}>
+                <option key={category._id || category.id} value={category._id || category.id}>
                   {category.name}
                 </option>
               ))}
