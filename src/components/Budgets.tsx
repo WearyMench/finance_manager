@@ -565,7 +565,7 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
   // Auto-seleccionar primera categoría si no hay seleccionada
   useEffect(() => {
     if (!formData.category && categories.length > 0) {
-      setFormData(prev => ({ ...prev, category: categories[0]._id || categories[0].id }));
+      setFormData(prev => ({ ...prev, category: (categories[0] as any)._id || categories[0].id }));
     }
   }, [formData.category, categories]);
 
@@ -630,7 +630,7 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
             >
               <option value="">Selecciona una categoría</option>
               {categories.map(category => (
-                <option key={category._id || category.id} value={category._id || category.id}>
+                <option key={(category as any)._id || category.id} value={(category as any)._id || category.id}>
                   {category.name}
                 </option>
               ))}
