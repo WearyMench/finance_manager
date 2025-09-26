@@ -389,12 +389,14 @@ const LandingPage = () => {
                   e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
                   e.currentTarget.style.borderColor = '#0ea5e9';
                   e.currentTarget.style.background = 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)';
+                  e.currentTarget.style.color = '#0ea5e9';
                   e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(14, 165, 233, 0.2), 0 10px 10px -5px rgba(14, 165, 233, 0.1)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'scale(1) translateY(0)';
                   e.currentTarget.style.borderColor = 'var(--color-neutral-200)';
                   e.currentTarget.style.background = 'var(--color-white)';
+                  e.currentTarget.style.color = 'var(--color-neutral-900)';
                   e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
                 }}
               >
@@ -435,7 +437,7 @@ const LandingPage = () => {
             textAlign: 'center'
           }}>
             {stats.map((stat, index) => (
-              <div key={index} style={{
+              <div key={index} className="stat-card" style={{
                 padding: '24px',
                 background: 'rgba(255, 255, 255, 0.8)',
                 borderRadius: '20px',
@@ -453,7 +455,7 @@ const LandingPage = () => {
                 e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
               }}
               >
-                <div style={{
+                <div className="stat-number" style={{
                   fontSize: 'clamp(28px, 6vw, 40px)',
                   fontWeight: '800',
                   color: '#0ea5e9',
@@ -461,8 +463,8 @@ const LandingPage = () => {
                 }}>
                   {stat.number}
                 </div>
-                <div style={{
-                  color: 'var(--color-neutral-600)',
+                <div className="stat-label" style={{
+                  color: '#1f2937',
                   fontSize: '16px',
                   fontWeight: '500'
                 }}>
@@ -573,14 +575,14 @@ const LandingPage = () => {
                 <h4 style={{
                   fontSize: '22px',
                   fontWeight: '700',
-                  color: 'var(--color-neutral-900)',
+                  color: '#1f2937',
                   marginBottom: '16px',
                   lineHeight: '1.3'
                 }}>
                   {feature.title}
                 </h4>
                 <p style={{
-                  color: 'var(--color-neutral-600)',
+                  color: '#4b5563',
                   lineHeight: '1.7',
                   fontSize: '16px'
                 }}>
