@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:production": "NODE_ENV=production tsc -b && vite build --mode production",
+    "build": "vite build",
+    "build:production": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "vercel-build": "npm run build:production"
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.8",
