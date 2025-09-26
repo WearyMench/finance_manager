@@ -46,7 +46,7 @@ export type DashboardStats = {
 export type UserProfile = {
   name: string;
   email: string;
-  currency: 'USD' | 'EUR' | 'MXN' | 'COP';
+  currency: 'USD' | 'EUR' | 'MXN' | 'COP' | 'DOP';
 };
 
 export type NotificationSettings = {

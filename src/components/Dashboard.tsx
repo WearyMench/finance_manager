@@ -2,6 +2,7 @@ import { useMemo, memo } from 'react';
 import { useApp } from '../context/AppContext';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { formatCurrency } from '../utils/currency';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -133,7 +134,7 @@ const Dashboard = memo(function Dashboard() {
             size: isMobile ? 10 : 11
           },
           callback: function(value: string | number) {
-            return `$${Number(value).toLocaleString()}`;
+            return formatCurrency(Number(value), state.user?.currency || 'USD');
           },
         },
       },
@@ -309,7 +310,7 @@ const Dashboard = memo(function Dashboard() {
                   color: stats.totalBalance >= 0 ? 'var(--color-success-600)' : 'var(--color-error-600)'
                 }}
               >
-                ${stats.totalBalance.toLocaleString()}
+                {formatCurrency(stats.totalBalance, state.user?.currency || 'USD')}
               </span>
             </div>
             <div 
@@ -329,7 +330,7 @@ const Dashboard = memo(function Dashboard() {
           </div>
           <div className="stat-card-label">Ingresos</div>
           <div className="stat-card-value">
-            ${stats.monthlyIncome.toLocaleString()}
+            {formatCurrency(stats.monthlyIncome, state.user?.currency || 'USD')}
           </div>
           <div className={`stat-card-trend ${incomeChange >= 0 ? 'positive' : 'negative'}`}>
             <div className={`trend-indicator ${incomeChange >= 0 ? 'positive' : 'negative'}`} />
@@ -343,7 +344,7 @@ const Dashboard = memo(function Dashboard() {
           </div>
           <div className="stat-card-label">Gastos</div>
           <div className="stat-card-value">
-            ${stats.monthlyExpenses.toLocaleString()}
+            {formatCurrency(stats.monthlyExpenses, state.user?.currency || 'USD')}
           </div>
           <div className={`stat-card-trend ${expenseChange >= 0 ? 'negative' : 'positive'}`}>
             <div className={`trend-indicator ${expenseChange >= 0 ? 'negative' : 'positive'}`} />
@@ -362,7 +363,7 @@ const Dashboard = memo(function Dashboard() {
               color: stats.monthlyBalance >= 0 ? 'var(--color-success-600)' : 'var(--color-error-600)'
             }}
           >
-            ${stats.monthlyBalance.toLocaleString()}
+            {formatCurrency(stats.monthlyBalance, state.user?.currency || 'USD')}
           </div>
           <div className={`stat-card-trend ${balanceChange >= 0 ? 'positive' : 'negative'}`}>
             <div className={`trend-indicator ${balanceChange >= 0 ? 'positive' : 'negative'}`} />
@@ -381,7 +382,7 @@ const Dashboard = memo(function Dashboard() {
               color: stats.budgetStatus.remaining >= 0 ? 'var(--color-success-600)' : 'var(--color-error-600)'
             }}
           >
-            ${stats.budgetStatus.remaining.toLocaleString()}
+            {formatCurrency(stats.budgetStatus.remaining, state.user?.currency || 'USD')}
           </div>
           <div className={`stat-card-trend ${stats.budgetStatus.remaining >= 0 ? 'positive' : 'negative'}`}>
             <div className={`trend-indicator ${stats.budgetStatus.remaining >= 0 ? 'positive' : 'negative'}`} />
@@ -595,7 +596,8 @@ const Dashboard = memo(function Dashboard() {
         <div className="recent-transactions-card">
           <RecentTransactions 
             transactions={monthlyTransactions} 
-            categories={state.categories} 
+            categories={state.categories}
+            currency={state.user?.currency || 'USD'}
           />
         </div>
       </div>

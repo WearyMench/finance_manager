@@ -4,16 +4,19 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { List, Clock, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import IconRenderer from './IconRenderer';
+import { formatCurrency } from '../utils/currency';
 import type { Transaction, Category } from '../context/AppContext';
 
 interface RecentTransactionsProps {
   transactions: Transaction[];
   categories: Category[];
+  currency?: string;
 }
 
 const RecentTransactions = memo(function RecentTransactions({ 
   transactions, 
-  categories 
+  categories,
+  currency = 'USD'
 }: RecentTransactionsProps) {
   const navigate = useNavigate();
   const getPaymentMethodLabel = (method: string) => {
@@ -124,7 +127,7 @@ const RecentTransactions = memo(function RecentTransactions({
                     ) : (
                       <ArrowDownLeft size={16} />
                     )}
-                    {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toLocaleString()}
+                    {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount, currency)}
                   </div>
                   <div className="transaction-payment">
                     {getPaymentMethodLabel(transaction.paymentMethod)}

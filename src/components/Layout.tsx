@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { formatCurrency } from '../utils/currency';
 import { 
   Home, 
   Plus, 
@@ -225,7 +226,7 @@ export default function Layout({ children }: LayoutProps) {
                 <TrendingUp size={16} style={{ color: 'var(--color-neutral-800)' }} />
               </div>
               <div style={{ color: 'var(--color-neutral-800)', fontSize: '1.5rem', fontWeight: '700' }}>
-                ${getDashboardStats().totalBalance.toLocaleString()}
+                {formatCurrency(getDashboardStats().totalBalance, state.user?.currency || 'USD')}
               </div>
               <div 
                 style={{

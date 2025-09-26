@@ -298,6 +298,7 @@ const AuthModal = memo(function AuthModal({ isOpen, onClose, onSuccess, isLogin:
                     <option value="EUR">EUR - Euro</option>
                     <option value="MXN">MXN - Peso Mexicano</option>
                     <option value="COP">COP - Peso Colombiano</option>
+                    <option value="DOP">DOP - Peso Dominicano</option>
                   </select>
                 </div>
               </>

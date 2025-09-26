@@ -671,6 +671,7 @@ export default function Settings() {
                 <option value="EUR">Euro (EUR)</option>
                 <option value="MXN">Peso Mexicano (MXN)</option>
                 <option value="COP">Peso Colombiano (COP)</option>
+                <option value="DOP">Peso Dominicano (DOP)</option>
               </select>
             </div>
 
