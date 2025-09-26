@@ -2,28 +2,28 @@ import React, { createContext, useContext, useReducer, useEffect, useMemo, useCa
 import apiService from '../services/api';
 
 // Types
-export type Transaction = {
-  id: string;
-  type: 'income' | 'expense';
-  amount: number;
-  description: string;
-  category: string;
-  paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
-  date: string;
-  createdAt: string;
-};
-
 export type Category = {
-  id: string;
+  _id: string;
   name: string;
   type: 'income' | 'expense';
   color: string;
   icon: string;
 };
 
+export type Transaction = {
+  id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: Category;
+  paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
+  date: string;
+  createdAt: string;
+};
+
 export type Budget = {
   id: string;
-  category: string;
+  category: Category;
   amount: number;
   spent: number;
   period: 'monthly' | 'weekly' | 'yearly';
@@ -363,7 +363,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [state.transactions]);
 
   const getTransactionsByCategory = useCallback((categoryId: string): Transaction[] => {
-    return state.transactions.filter(transaction => transaction.category === categoryId);
+    return state.transactions.filter(transaction => transaction.category._id === categoryId);
   }, [state.transactions]);
 
   const getTotalByCategory = useCallback((categoryId: string, year?: number, month?: number): number => {

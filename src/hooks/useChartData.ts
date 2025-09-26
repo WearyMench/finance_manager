@@ -14,7 +14,7 @@ interface ChartData {
 
 export function useChartData(
   transactions: Transaction[],
-  categories: Array<{ id: string; name: string; color: string; type: string }>,
+  categories: Array<{ _id: string; name: string; color: string; type: string }>,
   type: 'expense' | 'income' = 'expense'
 ): ChartData {
   return useMemo(() => {
@@ -23,7 +23,7 @@ export function useChartData(
     const categoryData = filteredCategories.map(cat => ({
       name: cat.name,
       amount: transactions
-        .filter(t => t.category === cat.id && t.type === type)
+        .filter(t => t.category._id === cat._id && t.type === type)
         .reduce((sum, t) => sum + t.amount, 0),
       color: cat.color,
     })).filter(cat => cat.amount > 0);

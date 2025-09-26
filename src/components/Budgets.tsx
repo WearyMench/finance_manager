@@ -17,9 +17,17 @@ import {
 import IconRenderer from './IconRenderer';
 
 // Types
+interface Category {
+  _id: string;
+  name: string;
+  type: 'income' | 'expense';
+  color: string;
+  icon: string;
+}
+
 interface Budget {
   id: string;
-  category: string;
+  category: Category;
   amount: number;
   spent: number;
   period: 'monthly' | 'weekly' | 'yearly';
@@ -320,7 +328,7 @@ export default function Budgets() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {state.budgets.map((budget) => {
-              const category = state.categories.find(c => c.id === budget.category);
+              const category = budget.category;
               const percentage = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0;
               const isOverBudget = budget.spent > budget.amount;
               const remaining = budget.amount - budget.spent;
@@ -630,7 +638,7 @@ function BudgetForm({ budget, categories, onClose, onSave }: BudgetFormProps) {
             >
               <option value="">Selecciona una categoría</option>
               {categories.map(category => (
-                <option key={(category as any)._id || category.id} value={(category as any)._id || category.id}>
+                <option key={category._id} value={category._id}>
                   {category.name}
                 </option>
               ))}

@@ -6,15 +6,32 @@ import { es } from 'date-fns/locale';
 import apiService from '../services/api';
 
 // Types
+interface Category {
+  _id: string;
+  name: string;
+  type: 'income' | 'expense';
+  color: string;
+  icon: string;
+}
+
 interface Transaction {
   id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: Category;
+  paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
+  date: string;
+  createdAt: string;
+}
+
+interface TransactionFormData {
   type: 'income' | 'expense';
   amount: number;
   description: string;
   category: string;
   paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
   date: string;
-  createdAt: string;
 }
 import { 
   Plus, 
@@ -59,40 +76,52 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterPaymentMethod, setFilterPaymentMethod] = useState<string>('all');
 
-  const handleAddTransaction = useCallback(async (transaction: Omit<Transaction, 'id' | 'createdAt'>) => {
+  const handleAddTransaction = useCallback(async (transaction: TransactionFormData) => {
     try {
-      const response = await apiService.createTransaction(transaction);
-      if (response.data?.transaction) {
-        dispatch({
-          type: 'ADD_TRANSACTION',
-          payload: response.data.transaction
-        });
-        setShowForm(false);
-      } else {
-        console.error('Error creando transacción:', response.error);
+      // Convert category name to ID if needed
+      let categoryId = transaction.category;
+      if (transaction.category && !transaction.category.match(/^[0-9a-fA-F]{24}$/)) {
+        // It's a name, find the ID
+        const category = state.categories.find(cat => cat.name === transaction.category);
+        categoryId = category?._id || transaction.category;
       }
-    } catch (error) {
-      console.error('Error creando transacción:', error);
-    }
-  }, [dispatch]);
 
-  const handleEditTransaction = useCallback(async (transaction: Transaction) => {
-    try {
-      const response = await apiService.updateTransaction(transaction.id, transaction);
-      if (response.data?.transaction) {
-        dispatch({
-          type: 'UPDATE_TRANSACTION',
-          payload: response.data.transaction
-        });
-        setShowForm(false);
-        setEditingTransaction(undefined);
+      const transactionData = {
+        ...transaction,
+        category: categoryId
+      };
+
+      if (editingTransaction) {
+        // Update existing transaction
+        const response = await apiService.updateTransaction(editingTransaction.id, transactionData);
+        if (response.data?.transaction) {
+          dispatch({
+            type: 'UPDATE_TRANSACTION',
+            payload: response.data.transaction
+          });
+          setShowForm(false);
+          setEditingTransaction(undefined);
+        } else {
+          console.error('Error actualizando transacción:', response.error);
+        }
       } else {
-        console.error('Error actualizando transacción:', response.error);
+        // Create new transaction
+        const response = await apiService.createTransaction(transactionData);
+        if (response.data?.transaction) {
+          dispatch({
+            type: 'ADD_TRANSACTION',
+            payload: response.data.transaction
+          });
+          setShowForm(false);
+        } else {
+          console.error('Error creando transacción:', response.error);
+        }
       }
     } catch (error) {
-      console.error('Error actualizando transacción:', error);
+      console.error('Error procesando transacción:', error);
     }
-  }, [dispatch]);
+  }, [dispatch, editingTransaction, state.categories]);
+
 
   const handleDeleteTransaction = useCallback(async (id: string) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar esta transacción?')) {
@@ -113,18 +142,18 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
   }, [dispatch]);
 
   const filteredAndSortedTransactions = useMemo(() => {
-    let filtered = state.transactions.filter(transaction => {
+    const filtered = state.transactions.filter(transaction => {
       const matchesSearch = transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         transaction.amount.toString().includes(searchTerm);
       const matchesType = filterType === 'all' || transaction.type === filterType;
-      const matchesCategory = filterCategory === 'all' || transaction.category === filterCategory;
+      const matchesCategory = filterCategory === 'all' || transaction.category.name === filterCategory;
       const matchesPaymentMethod = filterPaymentMethod === 'all' || transaction.paymentMethod === filterPaymentMethod;
       
       return matchesSearch && matchesType && matchesCategory && matchesPaymentMethod;
     });
 
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: Date | number | string, bValue: Date | number | string;
       
       switch (sortBy) {
         case 'date':
@@ -378,7 +407,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
             >
               <option value="all">Todas</option>
               {state.categories.map(category => (
-                <option key={(category as any)._id || category.id} value={(category as any)._id || category.id}>
+                <option key={category._id} value={category.name}>
                   {category.name}
                 </option>
               ))}
@@ -466,7 +495,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
         ) : (
           <div className="transaction-list">
             {filteredAndSortedTransactions.map((transaction) => {
-              const category = state.categories.find(c => ((c as any)._id || c.id) === transaction.category);
+              const category = transaction.category;
               
               return (
                 <div 
@@ -579,7 +608,7 @@ const TransactionsList = memo(function TransactionsList({ showFormOnMount = fals
                 setShowForm(false);
                 setEditingTransaction(undefined);
               }}
-              onSave={editingTransaction ? handleEditTransaction : handleAddTransaction}
+              onSave={handleAddTransaction}
             />
           </div>
         </div>

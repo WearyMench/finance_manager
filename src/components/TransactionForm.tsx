@@ -3,21 +3,38 @@ import { useApp } from '../context/AppContext';
 import { X, Calendar, Tag, CreditCard, DollarSign, Save, AlertCircle } from 'lucide-react';
 
 // Types
+interface Category {
+  _id: string;
+  name: string;
+  type: 'income' | 'expense';
+  color: string;
+  icon: string;
+}
+
 interface Transaction {
   id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: Category;
+  paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
+  date: string;
+  createdAt: string;
+}
+
+interface TransactionFormData {
   type: 'income' | 'expense';
   amount: number;
   description: string;
   category: string;
   paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
   date: string;
-  createdAt: string;
 }
 
 interface TransactionFormProps {
   transaction?: Transaction;
   onClose: () => void;
-  onSave: (transaction: Transaction) => void;
+  onSave: (transaction: TransactionFormData) => void;
 }
 
 const TransactionForm = memo(function TransactionForm({ transaction, onClose, onSave }: TransactionFormProps) {
@@ -26,7 +43,7 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
     type: transaction?.type || 'expense',
     amount: transaction?.amount || '',
     description: transaction?.description || '',
-    category: transaction?.category || '',
+    category: transaction?.category?.name || '',
     paymentMethod: transaction?.paymentMethod || 'cash',
     date: transaction?.date || new Date().toISOString().split('T')[0],
   });
@@ -75,15 +92,15 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
       return;
     }
 
-    const transactionData: Transaction = {
-      id: transaction?.id || Date.now().toString(),
+    const selectedCategory = availableCategories.find(cat => cat.name === formData.category);
+    
+    const transactionData: TransactionFormData = {
       type: formData.type as 'income' | 'expense',
       amount: Number(formData.amount),
       description: formData.description.trim(),
-      category: formData.category,
+      category: selectedCategory?._id || formData.category,
       paymentMethod: formData.paymentMethod as 'cash' | 'transfer' | 'debit' | 'credit',
       date: formData.date,
-      createdAt: transaction?.createdAt || new Date().toISOString()
     };
 
     onSave(transactionData);
@@ -256,7 +273,7 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
             >
               <option value="">Selecciona una categoría</option>
               {availableCategories.map(category => (
-                <option key={(category as any)._id || category.id} value={(category as any)._id || category.id}>
+                <option key={category._id || category.id} value={category.name}>
                   {category.name}
                 </option>
               ))}
