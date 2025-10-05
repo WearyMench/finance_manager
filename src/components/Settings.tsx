@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import apiService from '../services/api';
 import { 
@@ -17,7 +18,9 @@ import {
   Database,
   Download,
   Upload,
-  AlertCircle
+  AlertCircle,
+  Shield,
+  ExternalLink
 } from 'lucide-react';
 import IconRenderer from './IconRenderer';
 
@@ -871,6 +874,54 @@ export default function Settings() {
                 style={{ display: 'none' }}
                 onChange={onFileChange}
               />
+            </div>
+
+            <div 
+              style={{
+                padding: 'var(--space-5)',
+                background: 'var(--gradient-surface)',
+                borderRadius: 'var(--border-radius-lg)',
+                border: '1px solid var(--color-warning-200)',
+                textAlign: 'center'
+              }}
+            >
+              <div 
+                className="text-high-contrast"
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'var(--gradient-warning)',
+                  borderRadius: 'var(--border-radius-lg)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto var(--space-4)',
+                  boxShadow: 'var(--shadow-md)'
+                }}
+              >
+                <Shield size={20} />
+              </div>
+              <h4 style={{ fontWeight: '600', marginBottom: 'var(--space-2)' }}>
+                Política de Privacidad
+              </h4>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-neutral-700)', marginBottom: 'var(--space-4)' }}>
+                Conoce cómo protegemos y utilizamos tu información
+              </p>
+              <Link 
+                to="/privacy" 
+                className="btn btn-warning"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
+                  textDecoration: 'none',
+                  justifyContent: 'center'
+                }}
+              >
+                <Shield size={16} />
+                Ver Política
+                <ExternalLink size={14} />
+              </Link>
             </div>
           </div>
         </div>

@@ -11,6 +11,14 @@ interface Category {
   icon: string;
 }
 
+interface Account {
+  _id: string;
+  name: string;
+  type: 'cash' | 'bank' | 'credit' | 'savings' | 'investment';
+  balance: number;
+  currency: 'USD' | 'EUR' | 'MXN' | 'COP' | 'DOP';
+}
+
 interface Transaction {
   id: string;
   type: 'income' | 'expense';
@@ -18,6 +26,9 @@ interface Transaction {
   description: string;
   category: Category;
   paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
+  account: Account;
+  toAccount?: Account;
+  transferType: 'expense' | 'income' | 'transfer';
   date: string;
   createdAt: string;
 }
@@ -28,6 +39,9 @@ interface TransactionFormData {
   description: string;
   category: string;
   paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
+  account: string;
+  toAccount?: string;
+  transferType: 'expense' | 'income' | 'transfer';
   date: string;
 }
 
@@ -45,6 +59,9 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
     description: transaction?.description || '',
     category: transaction?.category?.name || '',
     paymentMethod: transaction?.paymentMethod || 'cash',
+    account: transaction?.account?._id || '',
+    toAccount: transaction?.toAccount?._id || '',
+    transferType: transaction?.transferType || 'expense',
     date: transaction?.date || new Date().toISOString().split('T')[0],
   });
 
@@ -54,6 +71,10 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
     return state.categories.filter(category => category.type === formData.type);
   }, [state.categories, formData.type]);
 
+  const availableAccounts = useMemo(() => {
+    return state.accounts.filter(account => account.isActive);
+  }, [state.accounts]);
+
   // Auto-seleccionar primera categoría si no hay seleccionada
   useEffect(() => {
     if (!formData.category && availableCategories.length > 0) {
@@ -61,6 +82,14 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
       setFormData(prev => ({ ...prev, category: selectedCategory }));
     }
   }, [formData.category, availableCategories]);
+
+  // Auto-seleccionar cuenta principal si no hay seleccionada
+  useEffect(() => {
+    if (!formData.account && availableAccounts.length > 0) {
+      const defaultAccount = availableAccounts.find(account => account.isDefault) || availableAccounts[0];
+      setFormData(prev => ({ ...prev, account: defaultAccount._id }));
+    }
+  }, [formData.account, availableAccounts]);
 
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
@@ -75,6 +104,10 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
 
     if (!formData.category) {
       newErrors.category = 'La categoría es requerida';
+    }
+
+    if (!formData.account) {
+      newErrors.account = 'La cuenta es requerida';
     }
 
     if (!formData.date) {
@@ -100,6 +133,9 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
       description: formData.description.trim(),
       category: selectedCategory?._id || formData.category,
       paymentMethod: formData.paymentMethod as 'cash' | 'transfer' | 'debit' | 'credit',
+      account: formData.account,
+      toAccount: formData.toAccount,
+      transferType: formData.transferType as 'expense' | 'income' | 'transfer',
       date: formData.date,
     };
 
@@ -291,6 +327,47 @@ const TransactionForm = memo(function TransactionForm({ transaction, onClose, on
               >
                 <AlertCircle size={14} />
                 {errors.category}
+              </div>
+            )}
+          </div>
+
+          {/* Cuenta */}
+          <div className="form-group">
+            <label className="form-label">
+              <CreditCard size={16} style={{ marginRight: 'var(--space-2)' }} />
+              Cuenta *
+            </label>
+            <select
+              className="form-select"
+              value={formData.account}
+              onChange={(e) => handleInputChange('account', e.target.value)}
+              style={{
+                borderColor: errors.account ? 'var(--color-error-500)' : undefined
+              }}
+            >
+              <option value="">Selecciona una cuenta</option>
+              {availableAccounts.map(account => (
+                <option key={account._id} value={account._id}>
+                  {account.name} ({account.type}) - {new Intl.NumberFormat('es-ES', {
+                    style: 'currency',
+                    currency: account.currency,
+                  }).format(account.balance)}
+                </option>
+              ))}
+            </select>
+            {errors.account && (
+              <div 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-1)',
+                  marginTop: 'var(--space-1)',
+                  color: 'var(--color-error-600)',
+                  fontSize: '0.75rem'
+                }}
+              >
+                <AlertCircle size={14} />
+                {errors.account}
               </div>
             )}
           </div>

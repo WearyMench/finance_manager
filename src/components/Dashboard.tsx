@@ -13,7 +13,10 @@ import {
   Smartphone,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  Wallet,
+  Building2,
+  PiggyBank
 } from 'lucide-react';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import {
@@ -48,6 +51,30 @@ const Dashboard = memo(function Dashboard() {
   const now = useMemo(() => new Date(), []);
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
+
+  // Calculate account balances
+  const accountBalances = useMemo(() => {
+    return state.accounts.map(account => {
+      const accountTransactions = state.transactions.filter(t => t.account?._id === account._id);
+      const accountIncome = accountTransactions
+        .filter(t => t.type === 'income')
+        .reduce((sum, t) => sum + t.amount, 0);
+      const accountExpenses = accountTransactions
+        .filter(t => t.type === 'expense')
+        .reduce((sum, t) => sum + t.amount, 0);
+      
+      return {
+        ...account,
+        calculatedBalance: accountIncome - accountExpenses,
+        monthlyIncome: accountTransactions
+          .filter(t => t.type === 'income' && new Date(t.date).getMonth() === currentMonth && new Date(t.date).getFullYear() === currentYear)
+          .reduce((sum, t) => sum + t.amount, 0),
+        monthlyExpenses: accountTransactions
+          .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === currentMonth && new Date(t.date).getFullYear() === currentYear)
+          .reduce((sum, t) => sum + t.amount, 0),
+      };
+    });
+  }, [state.accounts, state.transactions, currentMonth, currentYear]);
   
   const monthlyTransactions = useMemo(() => 
     getTransactionsByMonth(currentYear, currentMonth), 
@@ -390,6 +417,164 @@ const Dashboard = memo(function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Cuentas */}
+      {state.accounts.length > 0 && (
+        <div className="animate-stagger-2">
+          <div className="card">
+            <div className="card-header">
+              <div className="chart-title">
+                <div className="chart-title-icon">
+                  <CreditCard size={20} />
+                </div>
+                <div className="chart-title-text">
+                  <h3>Mis Cuentas</h3>
+                  <p>Balance actual por cuenta</p>
+                </div>
+              </div>
+            </div>
+            
+            <div 
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: 'var(--space-4)'
+              }}
+            >
+            {accountBalances.map((account) => {
+              const getAccountIcon = (type: string) => {
+                const icons = {
+                  cash: Wallet,
+                  bank: Building2,
+                  credit: CreditCard,
+                  savings: PiggyBank,
+                  investment: TrendingUp,
+                };
+                const IconComponent = icons[type as keyof typeof icons] || Wallet;
+                return <IconComponent size={24} style={{ color: 'var(--color-primary-600)' }} />;
+              };
+
+              const getAccountTypeDisplay = (type: string) => {
+                const types = {
+                  cash: 'Efectivo',
+                  bank: 'Cuenta Bancaria',
+                  credit: 'Tarjeta de Crédito',
+                  savings: 'Cuenta de Ahorros',
+                  investment: 'Inversión',
+                };
+                return types[type as keyof typeof types] || type;
+              };
+
+              return (
+                <div
+                  key={account._id}
+                  className="card card-hover"
+                  style={{
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                      <div style={{ 
+                        width: '48px', 
+                        height: '48px', 
+                        borderRadius: 'var(--border-radius-lg)', 
+                        background: 'var(--color-primary-50)', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        color: 'var(--color-primary-600)'
+                      }}>
+                        {getAccountIcon(account.type)}
+                      </div>
+                      <div>
+                        <h4 className="card-title" style={{ 
+                          fontSize: '1rem', 
+                          margin: 0
+                        }}>
+                          {account.name}
+                        </h4>
+                        <p className="card-description" style={{ 
+                          fontSize: '0.75rem', 
+                          margin: 0
+                        }}>
+                          {getAccountTypeDisplay(account.type)}
+                        </p>
+                      </div>
+                    </div>
+                    {account.isDefault && (
+                      <span style={{
+                        background: 'var(--color-success-100)',
+                        color: 'var(--color-success-700)',
+                        fontSize: '0.75rem',
+                        padding: 'var(--space-1) var(--space-2)',
+                        borderRadius: 'var(--border-radius-full)',
+                        fontWeight: '500'
+                      }}>
+                        Principal
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ marginBottom: 'var(--space-4)' }}>
+                    <div style={{
+                      fontSize: '1.5rem',
+                      fontWeight: '700',
+                      color: account.balance >= 0 ? 'var(--color-success-600)' : 'var(--color-error-600)',
+                      marginBottom: 'var(--space-2)'
+                    }}>
+                      {formatCurrency(account.balance, account.currency)}
+                    </div>
+                    {account.type === 'credit' && account.creditLimit && (
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: 'var(--color-neutral-600)',
+                        marginBottom: 'var(--space-1)'
+                      }}>
+                        Límite: {formatCurrency(account.creditLimit, account.currency)}
+                      </div>
+                    )}
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: 'var(--color-neutral-600)',
+                      fontWeight: '500'
+                    }}>
+                      Este mes: {formatCurrency(account.monthlyIncome - account.monthlyExpenses, account.currency)}
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '0.75rem',
+                    color: 'var(--color-neutral-600)'
+                  }}>
+                    <div>
+                      <div style={{ color: 'var(--color-success-600)', fontWeight: '500' }}>
+                        +{formatCurrency(account.monthlyIncome, account.currency)}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-neutral-500)' }}>
+                        Ingresos
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ color: 'var(--color-error-600)', fontWeight: '500' }}>
+                        -{formatCurrency(account.monthlyExpenses, account.currency)}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-neutral-500)' }}>
+                        Gastos
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Gráficos */}
       <div 

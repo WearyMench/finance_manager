@@ -410,7 +410,7 @@ class ApiService {
     });
   }
 
-  async deleteAccount(password: string) {
+  async deleteUserAccount(password: string) {
     return this.request('/user/account', {
       method: 'DELETE',
       body: JSON.stringify({ password }),
@@ -432,6 +432,93 @@ class ApiService {
         expenseCount: number;
       };
     }>('/user/stats');
+  }
+
+  // Account methods
+  async getAccounts() {
+    return this.request<{
+      success: boolean;
+      data: any[];
+      count: number;
+    }>('/accounts');
+  }
+
+  async getAccount(id: string) {
+    return this.request<{
+      success: boolean;
+      data: any;
+    }>(`/accounts/${id}`);
+  }
+
+  async createAccount(accountData: {
+    name: string;
+    type: 'cash' | 'bank' | 'credit' | 'savings' | 'investment';
+    balance?: number;
+    currency?: string;
+    description?: string;
+    creditLimit?: number;
+    bankName?: string;
+    accountNumber?: string;
+    isDefault?: boolean;
+  }) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>('/accounts', {
+      method: 'POST',
+      body: JSON.stringify(accountData),
+    });
+  }
+
+  async updateAccount(id: string, accountData: {
+    name?: string;
+    type?: 'cash' | 'bank' | 'credit' | 'savings' | 'investment';
+    balance?: number;
+    currency?: string;
+    description?: string;
+    creditLimit?: number;
+    bankName?: string;
+    accountNumber?: string;
+    isDefault?: boolean;
+  }) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>(`/accounts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(accountData),
+    });
+  }
+
+  async deleteAccount(id: string) {
+    return this.request<{
+      success: boolean;
+      message: string;
+    }>(`/accounts/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async transferMoney(fromAccountId: string, transferData: {
+    toAccount: string;
+    amount: number;
+    description: string;
+  }) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      data: {
+        fromAccount: any;
+        toAccount: any;
+        transferOut: any;
+        transferIn: any;
+      };
+    }>(`/accounts/${fromAccountId}/transfer`, {
+      method: 'POST',
+      body: JSON.stringify(transferData),
+    });
   }
 
   // Utility methods

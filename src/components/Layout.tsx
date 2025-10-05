@@ -27,12 +27,11 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { getDashboardStats, state, logout } = useApp();
+  const { getDashboardStats, state, logout, toggleTheme } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const unreadCount = 0;
@@ -84,6 +83,13 @@ export default function Layout({ children }: LayoutProps) {
       color: 'warning'
     },
     { 
+      path: '/accounts', 
+      icon: Wallet, 
+      label: 'Cuentas', 
+      description: 'Gestión de balances',
+      color: 'info'
+    },
+    { 
       path: '/settings', 
       icon: Settings, 
       label: 'Configuración', 
@@ -92,20 +98,8 @@ export default function Layout({ children }: LayoutProps) {
     },
   ];
 
-  // Hidratar tema desde localStorage o prefers-color-scheme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || savedTheme === 'light') {
-      const isDark = savedTheme === 'dark';
-      setDarkMode(isDark);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    } else {
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = prefersDark ? 'dark' : 'light';
-      setDarkMode(prefersDark);
-      document.documentElement.setAttribute('data-theme', theme);
-    }
-  }, []);
+  // Get dark mode state from context
+  const darkMode = state.theme === 'dark';
 
   // Cerrar menú móvil al cambiar de ruta
   useEffect(() => {
@@ -316,13 +310,7 @@ export default function Layout({ children }: LayoutProps) {
                 className="btn btn-ghost btn-theme"
                 style={{ padding: 'var(--space-2)', minWidth: 'auto' }}
                 title={darkMode ? 'Cambiar a claro' : 'Cambiar a oscuro'}
-                onClick={() => {
-                  const next = !darkMode;
-                  setDarkMode(next);
-                  const theme = next ? 'dark' : 'light';
-                  document.documentElement.setAttribute('data-theme', theme);
-                  localStorage.setItem('theme', theme);
-                }}
+                onClick={toggleTheme}
               >
                 {darkMode ? <Sun size={18} /> : <Moon size={18} />}
               </button>

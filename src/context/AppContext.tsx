@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback } from 'react';
 import apiService from '../services/api';
+import { useTheme, type Theme } from '../hooks/useTheme';
 
 // Types
 export type Category = {
@@ -10,6 +11,22 @@ export type Category = {
   icon: string;
 };
 
+export type Account = {
+  _id: string;
+  name: string;
+  type: 'cash' | 'bank' | 'credit' | 'savings' | 'investment';
+  balance: number;
+  currency: 'USD' | 'EUR' | 'MXN' | 'COP' | 'DOP';
+  description?: string;
+  creditLimit?: number;
+  bankName?: string;
+  accountNumber?: string;
+  isActive: boolean;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Transaction = {
   id: string;
   type: 'income' | 'expense';
@@ -17,6 +34,9 @@ export type Transaction = {
   description: string;
   category: Category;
   paymentMethod: 'cash' | 'transfer' | 'debit' | 'credit';
+  account: Account;
+  toAccount?: Account; // For transfers
+  transferType: 'expense' | 'income' | 'transfer';
   date: string;
   createdAt: string;
 };
@@ -58,12 +78,14 @@ export type NotificationSettings = {
 interface AppState {
   transactions: Transaction[];
   categories: Category[];
+  accounts: Account[];
   budgets: Budget[];
   isLoading: boolean;
   userProfile: UserProfile;
   notificationSettings: NotificationSettings;
   isAuthenticated: boolean;
   user: any | null;
+  theme: Theme;
 }
 
 type AppAction =
@@ -76,6 +98,10 @@ type AppAction =
   | { type: 'ADD_CATEGORY'; payload: Category }
   | { type: 'UPDATE_CATEGORY'; payload: Category }
   | { type: 'DELETE_CATEGORY'; payload: string }
+  | { type: 'SET_ACCOUNTS'; payload: Account[] }
+  | { type: 'ADD_ACCOUNT'; payload: Account }
+  | { type: 'UPDATE_ACCOUNT'; payload: Account }
+  | { type: 'DELETE_ACCOUNT'; payload: string }
   | { type: 'SET_BUDGETS'; payload: Budget[] }
   | { type: 'ADD_BUDGET'; payload: Budget }
   | { type: 'UPDATE_BUDGET'; payload: Budget }
@@ -84,11 +110,13 @@ type AppAction =
   | { type: 'UPDATE_NOTIFICATION_SETTINGS'; payload: NotificationSettings }
   | { type: 'SET_AUTHENTICATED'; payload: boolean }
   | { type: 'SET_USER'; payload: any | null }
+  | { type: 'SET_THEME'; payload: Theme }
   | { type: 'LOGOUT' };
 
 const initialState: AppState = {
   transactions: [],
   categories: [],
+  accounts: [],
   budgets: [],
   isLoading: false,
   userProfile: {
@@ -103,6 +131,7 @@ const initialState: AppState = {
   },
   isAuthenticated: false,
   user: null,
+  theme: 'light',
 };
 
 // Default categories are now handled by the backend
@@ -152,6 +181,26 @@ function appReducer(state: AppState, action: AppAction): AppState {
         categories: state.categories.filter(c => c.id !== action.payload),
       };
     
+    case 'SET_ACCOUNTS':
+      return { ...state, accounts: action.payload };
+    
+    case 'ADD_ACCOUNT':
+      return { ...state, accounts: [...state.accounts, action.payload] };
+    
+    case 'UPDATE_ACCOUNT':
+      return {
+        ...state,
+        accounts: state.accounts.map(a =>
+          a._id === action.payload._id ? action.payload : a
+        ),
+      };
+    
+    case 'DELETE_ACCOUNT':
+      return {
+        ...state,
+        accounts: state.accounts.filter(a => a._id !== action.payload),
+      };
+    
     case 'SET_BUDGETS':
       return { ...state, budgets: action.payload };
     
@@ -184,6 +233,9 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_USER':
       return { ...state, user: action.payload };
     
+    case 'SET_THEME':
+      return { ...state, theme: action.payload };
+    
     case 'LOGOUT':
       return {
         ...state,
@@ -202,6 +254,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
           weeklySummary: false,
           savingGoals: true,
         },
+        theme: 'light',
       };
     
     default:
@@ -220,10 +273,48 @@ const AppContext = createContext<{
   register: (userData: any) => Promise<boolean>;
   logout: () => void;
   loadUserData: () => Promise<void>;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
 } | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+  const { theme, setTheme: setThemeHook, toggleTheme: toggleThemeHook } = useTheme();
+
+  // Load user data from backend
+  const loadUserData = useCallback(async () => {
+    try {
+      const [transactionsRes, categoriesRes, budgetsRes, accountsRes] = await Promise.all([
+        apiService.getTransactions({ limit: 1000 }),
+        apiService.getCategories(),
+        apiService.getBudgets({ limit: 1000 }),
+        apiService.getAccounts()
+      ]);
+
+      if (transactionsRes.data?.transactions) {
+        dispatch({ type: 'SET_TRANSACTIONS', payload: transactionsRes.data.transactions });
+      }
+
+      if (categoriesRes.data?.categories) {
+        dispatch({ type: 'SET_CATEGORIES', payload: categoriesRes.data.categories });
+      }
+
+      if (budgetsRes.data?.budgets) {
+        dispatch({ type: 'SET_BUDGETS', payload: budgetsRes.data.budgets });
+      }
+
+      if (accountsRes.data?.success && accountsRes.data.data) {
+        dispatch({ type: 'SET_ACCOUNTS', payload: accountsRes.data.data });
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  }, []);
+
+  // Sync theme with context
+  useEffect(() => {
+    dispatch({ type: 'SET_THEME', payload: theme });
+  }, [theme]);
 
   // Check authentication and load user data on mount
   useEffect(() => {
@@ -252,32 +343,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
 
     initializeApp();
-  }, []);
-
-  // Load user data from backend
-  const loadUserData = useCallback(async () => {
-    try {
-      const [transactionsRes, categoriesRes, budgetsRes] = await Promise.all([
-        apiService.getTransactions({ limit: 1000 }),
-        apiService.getCategories(),
-        apiService.getBudgets({ limit: 1000 })
-      ]);
-
-      if (transactionsRes.data?.transactions) {
-        dispatch({ type: 'SET_TRANSACTIONS', payload: transactionsRes.data.transactions });
-      }
-
-      if (categoriesRes.data?.categories) {
-        dispatch({ type: 'SET_CATEGORIES', payload: categoriesRes.data.categories });
-      }
-
-      if (budgetsRes.data?.budgets) {
-        dispatch({ type: 'SET_BUDGETS', payload: budgetsRes.data.budgets });
-      }
-    } catch (error) {
-      console.error('Error loading user data:', error);
-    }
-  }, []);
+  }, [loadUserData]);
 
   // Recalculate budget spent based on transactions within budget date range
   useEffect(() => {
@@ -422,6 +488,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'LOGOUT' });
   }, []);
 
+  const setTheme = useCallback((newTheme: Theme) => {
+    setThemeHook(newTheme);
+  }, [setThemeHook]);
+
+  const toggleTheme = useCallback(() => {
+    toggleThemeHook();
+  }, [toggleThemeHook]);
+
   const contextValue = useMemo(() => ({
     state,
     dispatch,
@@ -433,7 +507,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     register,
     logout,
     loadUserData,
-  }), [state, dispatch, getDashboardStats, getTransactionsByMonth, getTransactionsByCategory, getTotalByCategory, login, register, logout, loadUserData]);
+    setTheme,
+    toggleTheme,
+  }), [state, dispatch, getDashboardStats, getTransactionsByMonth, getTransactionsByCategory, getTotalByCategory, login, register, logout, loadUserData, setTheme, toggleTheme]);
 
   return (
     <AppContext.Provider value={contextValue}>
@@ -442,10 +518,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useApp() {
+export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error('useApp must be used within an AppProvider');
   }
   return context;
-}
+};

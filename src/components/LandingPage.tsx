@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   TrendingUp, 
   Shield, 
@@ -12,12 +13,16 @@ import {
   Moon
 } from 'lucide-react';
 import AuthModal from './AuthModal';
+import { useApp } from '../context/AppContext';
 
 const LandingPage = () => {
+  const { state, toggleTheme } = useApp();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [logoVariation, setLogoVariation] = useState(0);
+  
+  // Get dark mode state from context
+  const isDarkMode = state.theme === 'dark';
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
@@ -31,21 +36,6 @@ const LandingPage = () => {
   const openRegister = () => {
     setIsLogin(false);
     setShowAuthModal(true);
-  };
-
-  // Theme toggle functionality
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    
-    // Apply theme to document
-    if (newTheme) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('theme', 'light');
-    }
   };
 
   // Logo variations
@@ -65,15 +55,6 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Initialize theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-    
-    setIsDarkMode(theme === 'dark');
-    document.documentElement.setAttribute('data-theme', theme);
-  }, []);
 
   const features = [
     {
@@ -753,10 +734,17 @@ const LandingPage = () => {
                 onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
               >© 2024 Gestor de Gastos</span>
               <span>•</span>
-              <span style={{ cursor: 'pointer', transition: 'color 0.2s ease' }}
+              <Link
+                to="/privacy"
+                style={{ 
+                  cursor: 'pointer', 
+                  transition: 'color 0.2s ease',
+                  color: '#94a3b8',
+                  textDecoration: 'none'
+                }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
                 onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-              >Privacidad</span>
+              >Privacidad</Link>
               <span>•</span>
               <span style={{ cursor: 'pointer', transition: 'color 0.2s ease' }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
