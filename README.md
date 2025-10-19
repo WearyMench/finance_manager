@@ -144,7 +144,6 @@ This is a static website that can be deployed to:
 For technical support or questions about this landing page, contact:
 
 - Email: support@expensemanager.app
-- Privacy: privacy@expensemanager.app
 
 ## License
 
