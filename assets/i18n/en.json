@@ -29,7 +29,7 @@
   "featureMultiAccount": "Multi-Account Support",
   "featureMultiAccountDesc": "Manage multiple bank accounts, credit cards, and cash accounts in one place.",
   "featureMultiCurrency": "Multi-Currency",
-  "featureMultiCurrencyDesc": "Support for 50+ currencies with automatic conversion and real-time exchange rates.",
+  "featureMultiCurrencyDesc": "Support for multiple currencies with automatic conversion and real-time exchange rates.",
   "featureAnalytics": "Advanced Analytics",
   "featureAnalyticsDesc": "Comprehensive reports and visualizations to understand your spending patterns.",
   "featureBiometric": "Biometric Security",
@@ -286,7 +286,6 @@
   "contactContent": "If you have any questions about these terms, please contact us:",
   "contactMethod1": "Email: support@expensemanager.app",
   "contactMethod2": "Website: https://expensemanager.app/terms",
-  "responseTime": "We strive to respond to all inquiries within 48 hours.",
   
   "termsConfirmation": "By using this application, you confirm that you have read, understood, and agree to these terms and conditions.",
   
@@ -295,7 +294,6 @@
   "faqTitle": "FAQ",
   "faqDescription": "Find answers to common questions about using Expense Manager.",
   "viewFaq": "View FAQ",
-  "termsTitle": "Terms of Service",
   "termsDescription": "Read our terms and conditions for using Expense Manager.",
   "viewTerms": "View Terms",
   "privacyTitle": "Privacy Policy",
@@ -303,7 +301,7 @@
   "viewPrivacy": "View Privacy Policy",
   "contactTitle": "Contact Us",
   "contactDescription": "Get in touch with our support team for assistance.",
-  "contactUs": "Contact Us",
+  "contactUsButton": "Contact Us",
   
   "footerDescription": "Your personal finance management solution for a better financial future.",
   "footerQuickLinks": "Quick Links",

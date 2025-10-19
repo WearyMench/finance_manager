@@ -29,7 +29,7 @@
   "featureMultiAccount": "Soporte Multi-Cuenta",
   "featureMultiAccountDesc": "Gestiona múltiples cuentas bancarias, tarjetas de crédito y cuentas de efectivo en un solo lugar.",
   "featureMultiCurrency": "Multi-Moneda",
-  "featureMultiCurrencyDesc": "Soporte para 50+ monedas con conversión automática y tasas de cambio en tiempo real.",
+  "featureMultiCurrencyDesc": "Soporte para múltiples monedas con conversión automática y tasas de cambio en tiempo real.",
   "featureAnalytics": "Análisis Avanzados",
   "featureAnalyticsDesc": "Reportes completos y visualizaciones para entender tus patrones de gasto.",
   "featureBiometric": "Seguridad Biométrica",
@@ -286,7 +286,6 @@
   "contactContent": "Si tiene alguna pregunta sobre estos términos, por favor contáctenos:",
   "contactMethod1": "Email: soporte@gestordegastos.app",
   "contactMethod2": "Sitio web: https://gestordegastos.app/terms",
-  "responseTime": "Nos esforzamos por responder a todas las consultas dentro de 48 horas.",
   
   "termsConfirmation": "Al usar esta aplicación, confirma que ha leído, entendido y está de acuerdo con estos términos y condiciones.",
   
@@ -295,7 +294,6 @@
   "faqTitle": "Preguntas Frecuentes",
   "faqDescription": "Encuentra respuestas a preguntas comunes sobre el uso de Gestor de Gastos.",
   "viewFaq": "Ver Preguntas",
-  "termsTitle": "Términos de Servicio",
   "termsDescription": "Lee nuestros términos y condiciones para usar Gestor de Gastos.",
   "viewTerms": "Ver Términos",
   "privacyTitle": "Política de Privacidad",
