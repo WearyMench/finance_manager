@@ -288,6 +288,8 @@
   "contactMethod2": "Website: https://expensemanager.app/terms",
   "responseTime": "We strive to respond to all inquiries within 48 hours.",
   
+  "termsConfirmation": "By using this application, you confirm that you have read, understood, and agree to these terms and conditions.",
+  
   "supportTitle": "Support & Legal",
   "supportSubtitle": "Get help and learn about our policies",
   "faqTitle": "FAQ",
