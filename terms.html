@@ -391,5 +391,13 @@
     <!-- Scripts -->
     <script src="assets/js/i18n.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+      // Initialize i18n for this page
+      document.addEventListener("DOMContentLoaded", function () {
+        if (typeof I18n !== "undefined") {
+          window.i18n = new I18n();
+        }
+      });
+    </script>
   </body>
 </html>

@@ -120,7 +120,7 @@
   "rightsList1": "Access your personal data",
   "rightsList2": "Correct inaccurate information",
   "rightsList3": "Delete your account and data",
-  "rightsList4": "Export your data in a portable format",
+  "rightsList4": "Request a copy of your data",
   "rightsList5": "Opt out of non-essential communications",
   "rightsList6": "Withdraw consent for data processing",
   
@@ -202,8 +202,6 @@
   "faq11Answer": "Go to Settings > Profile > Change Password. Enter your current password and new password, then confirm the change.",
   "faq12Question": "Can I delete my account?",
   "faq12Answer": "Yes, you can delete your account in Settings > Profile > Danger Zone > Delete Account. This action is permanent and cannot be undone.",
-  "faq13Question": "How do I export my data?",
-  "faq13Answer": "Go to Settings > Data Management > Export Data. You can export your transactions as a CSV file for backup or analysis.",
   "faq14Question": "Is my data secure?",
   "faq14Answer": "Yes, we use industry-standard encryption to protect your data both in transit and at rest. Your financial information is never shared with third parties without your explicit consent."
 }

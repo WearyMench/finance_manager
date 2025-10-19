@@ -120,7 +120,7 @@
   "rightsList1": "Acceder a sus datos personales",
   "rightsList2": "Corregir información inexacta",
   "rightsList3": "Eliminar su cuenta y datos",
-  "rightsList4": "Exportar sus datos en un formato portable",
+  "rightsList4": "Solicitar una copia de sus datos",
   "rightsList5": "Optar por no recibir comunicaciones no esenciales",
   "rightsList6": "Retirar el consentimiento para el procesamiento de datos",
   
@@ -202,8 +202,6 @@
   "faq11Answer": "Ve a Configuración > Perfil > Cambiar Contraseña. Ingresa tu contraseña actual y nueva contraseña, luego confirma el cambio.",
   "faq12Question": "¿Puedo eliminar mi cuenta?",
   "faq12Answer": "Sí, puedes eliminar tu cuenta en Configuración > Perfil > Zona de Peligro > Eliminar Cuenta. Esta acción es permanente y no se puede deshacer.",
-  "faq13Question": "¿Cómo exporto mis datos?",
-  "faq13Answer": "Ve a Configuración > Gestión de Datos > Exportar Datos. Puedes exportar tus transacciones como un archivo CSV para respaldo o análisis.",
   "faq14Question": "¿Están seguros mis datos?",
   "faq14Answer": "Sí, usamos cifrado de nivel industrial para proteger tus datos tanto en tránsito como en reposo. Tu información financiera nunca se comparte con terceros sin tu consentimiento explícito."
 }
