@@ -1,73 +1,151 @@
-# React + TypeScript + Vite
+# Expense Manager - Landing Page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive landing page for the Expense Manager mobile application. This website serves as the official web presence for the app, providing information about features, screenshots, download links, and legal documentation required for Google Play Store verification.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Responsive Design**: Optimized for mobile, tablet, and desktop devices
+- **Internationalization**: Support for English and Spanish with automatic language detection
+- **Modern UI**: Clean, professional design matching the app's branding
+- **SEO Optimized**: Proper meta tags, structured data, and semantic HTML
+- **Accessibility**: WCAG compliant with keyboard navigation and screen reader support
+- **Performance**: Optimized images, lazy loading, and efficient CSS/JS
 
-## React Compiler
+## Pages
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Home** (`index.html`): Main landing page with app features and information
+- **FAQ** (`faq.html`): Frequently asked questions with search and filtering
+- **Terms of Service** (`terms.html`): Legal terms and conditions
+- **Privacy Policy** (`privacy.html`): Privacy policy and data handling information
 
-## Expanding the ESLint configuration
+## Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+Front/
+├── index.html              # Main landing page
+├── faq.html                # FAQ page
+├── terms.html              # Terms of Service
+├── privacy.html            # Privacy Policy
+├── README.md               # This file
+└── assets/
+    ├── css/
+    │   ├── style.css       # Main styles
+    │   ├── responsive.css  # Responsive design
+    │   ├── legal.css       # Legal pages styles
+    │   └── faq.css         # FAQ page styles
+    ├── js/
+    │   ├── main.js         # Main functionality
+    │   ├── i18n.js         # Internationalization
+    │   └── faq.js          # FAQ functionality
+    ├── i18n/
+    │   ├── en.json         # English translations
+    │   └── es.json         # Spanish translations
+    └── images/
+        ├── logo.png        # App logo
+        ├── app-preview.png # App preview image
+        ├── screenshot-*.png # App screenshots
+        ├── google-play-badge.png # Google Play badge
+        └── favicon-*.png   # Favicon files
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Clone or download** the project files
+2. **Add images** to the `assets/images/` directory:
+   - `logo.png` - App logo (recommended: 200x200px)
+   - `app-preview.png` - App preview for hero section (recommended: 300x600px)
+   - `screenshot-1.png` to `screenshot-4.png` - App screenshots
+   - `google-play-badge.png` - Google Play Store badge
+   - `favicon-32x32.png` and `favicon-16x16.png` - Favicon files
+3. **Deploy** to your web server or hosting service
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Customization
+
+### Colors
+
+The app uses a consistent color scheme defined in CSS variables:
+
+- Primary: `#7091CE` (soft blue)
+- Secondary: `#BFDFFF` (light blue)
+- Success: `#10B981` (green)
+- Error: `#EF4444` (red)
+
+### Content
+
+- Update app information in the HTML files
+- Modify translations in the `assets/i18n/` JSON files
+- Replace placeholder images with actual app screenshots
+
+### Google Play Store Integration
+
+- Update the Google Play Store URL in `index.html`
+- Ensure the app package name matches your actual app
+- Add proper app store metadata
+
+## Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+## Performance
+
+- Optimized images with WebP format support
+- Minified CSS and JavaScript (for production)
+- Lazy loading for images
+- Efficient font loading
+- Minimal external dependencies
+
+## SEO Features
+
+- Semantic HTML structure
+- Meta tags for social sharing
+- Open Graph and Twitter Card support
+- Structured data markup
+- Sitemap ready
+- Mobile-friendly design
+
+## Legal Compliance
+
+- GDPR compliant privacy policy
+- Terms of service for app usage
+- Cookie policy integration ready
+- Accessibility compliance (WCAG 2.1)
+
+## Deployment
+
+### Static Hosting
+
+This is a static website that can be deployed to:
+
+- GitHub Pages
+- Netlify
+- Vercel
+- AWS S3 + CloudFront
+- Any web server
+
+### Domain Setup
+
+- Point your domain to the hosting service
+- Configure SSL certificate
+- Set up redirects if needed
+
+## Maintenance
+
+- Update app screenshots when releasing new versions
+- Keep legal documents current
+- Monitor performance and user feedback
+- Update translations as needed
+
+## Support
+
+For technical support or questions about this landing page, contact:
+
+- Email: support@expensemanager.app
+- Privacy: privacy@expensemanager.app
+
+## License
+
+This landing page is part of the Expense Manager project. All rights reserved.

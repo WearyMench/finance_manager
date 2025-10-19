@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ - Expense Manager</title>
+    <meta
+      name="description"
+      content="Frequently Asked Questions about Expense Manager - Personal Finance Management App"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/images/favicon-16x16.png"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/responsive.css" />
+    <link rel="stylesheet" href="assets/css/faq.css" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+      <button id="lang-en" class="lang-btn active" data-lang="en">EN</button>
+      <button id="lang-es" class="lang-btn" data-lang="es">ES</button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <a
+            href="index.html"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              text-decoration: none;
+            "
+          >
+            <img
+              src="assets/images/logo.png"
+              alt="Expense Manager"
+              class="logo"
+            />
+            <span class="logo-text" data-i18n="appTitle">Expense Manager</span>
+          </a>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+          <a href="index.html#features" class="nav-link" data-i18n="navFeatures"
+            >Features</a
+          >
+          <a
+            href="index.html#screenshots"
+            class="nav-link"
+            data-i18n="navScreenshots"
+            >Screenshots</a
+          >
+          <a href="index.html#download" class="nav-link" data-i18n="navDownload"
+            >Download</a
+          >
+          <a href="index.html#support" class="nav-link" data-i18n="navSupport"
+            >Support</a
+          >
+        </div>
+        <div class="nav-toggle" id="nav-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- FAQ Content -->
+    <main class="faq-content">
+      <div class="container">
+        <div class="faq-header">
+          <h1 class="faq-title" data-i18n="faqTitle">
+            Frequently Asked Questions
+          </h1>
+          <p class="faq-subtitle" data-i18n="faqSubtitle">
+            Find answers to common questions about using Expense Manager
+          </p>
+        </div>
+
+        <div class="faq-search">
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              id="faq-search"
+              class="search-input"
+              placeholder="Search FAQ..."
+              data-i18n="searchPlaceholder"
+            />
+          </div>
+        </div>
+
+        <div class="faq-categories">
+          <button
+            class="category-btn active"
+            data-category="all"
+            data-i18n="allCategories"
+          >
+            All Categories
+          </button>
+          <button
+            class="category-btn"
+            data-category="getting-started"
+            data-i18n="gettingStarted"
+          >
+            Getting Started
+          </button>
+          <button
+            class="category-btn"
+            data-category="features"
+            data-i18n="features"
+          >
+            Features
+          </button>
+          <button
+            class="category-btn"
+            data-category="troubleshooting"
+            data-i18n="troubleshooting"
+          >
+            Troubleshooting
+          </button>
+          <button
+            class="category-btn"
+            data-category="account"
+            data-i18n="account"
+          >
+            Account
+          </button>
+        </div>
+
+        <div class="faq-list">
+          <!-- Getting Started Questions -->
+          <div class="faq-item" data-category="getting-started">
+            <div class="faq-question">
+              <h3 data-i18n="faq1Question">
+                How do I add my first transaction?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq1Answer">
+                Tap the + button on the main screen, select 'Add Income' or 'Add
+                Expense', choose a category, enter the amount and description,
+                then tap Save.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="getting-started">
+            <div class="faq-question">
+              <h3 data-i18n="faq2Question">Can I use multiple currencies?</h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq2Answer">
+                Yes! Create accounts in different currencies. The app will
+                automatically convert amounts for analysis and reports.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="getting-started">
+            <div class="faq-question">
+              <h3 data-i18n="faq3Question">
+                How do I create my first account?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq3Answer">
+                Go to the Accounts tab, tap the + button, enter the account
+                details and select your preferred currency, then save.
+              </p>
+            </div>
+          </div>
+
+          <!-- Features Questions -->
+          <div class="faq-item" data-category="features">
+            <div class="faq-question">
+              <h3 data-i18n="faq4Question">How do budgets work?</h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq4Answer">
+                Set spending limits for any category. Budgets are automatically
+                set for monthly periods (30 days). The app tracks your spending
+                and alerts you when you're near or exceed the limit.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="features">
+            <div class="faq-question">
+              <h3 data-i18n="faq5Question">
+                Can I edit or delete transactions?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq5Answer">
+                Yes! Swipe left on any transaction to edit or delete it. You can
+                also tap a transaction to open the edit screen.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="features">
+            <div class="faq-question">
+              <h3 data-i18n="faq6Question">
+                How do I transfer money between accounts?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq6Answer">
+                From the main screen, tap the Transfer card (with the exchange
+                icon), or go to any account details and tap the Transfer button.
+                Select source and destination accounts, enter the amount and
+                description, then save.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="features">
+            <div class="faq-question">
+              <h3 data-i18n="faq7Question">
+                What is biometric authentication?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq7Answer">
+                Biometric authentication uses your fingerprint or Face ID to
+                quickly and securely access the app. You can enable this in
+                Settings > Security.
+              </p>
+            </div>
+          </div>
+
+          <!-- Troubleshooting Questions -->
+          <div class="faq-item" data-category="troubleshooting">
+            <div class="faq-question">
+              <h3 data-i18n="faq8Question">
+                The app is running slowly, what should I do?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq8Answer">
+                Try closing and reopening the app, restart your device, or check
+                if you have enough storage space. If the problem persists,
+                contact support.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="troubleshooting">
+            <div class="faq-question">
+              <h3 data-i18n="faq9Question">
+                I can't see my data after updating the app
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq9Answer">
+                Make sure you're logged in with the same account. If you're
+                still having issues, try logging out and back in, or contact
+                support for assistance.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="troubleshooting">
+            <div class="faq-question">
+              <h3 data-i18n="faq10Question">
+                Why am I not receiving notifications?
+              </h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq10Answer">
+                Check your device's notification settings for the app, and
+                ensure notifications are enabled in the app's settings under
+                Notifications.
+              </p>
+            </div>
+          </div>
+
+          <!-- Account Questions -->
+          <div class="faq-item" data-category="account">
+            <div class="faq-question">
+              <h3 data-i18n="faq11Question">How do I change my password?</h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq11Answer">
+                Go to Settings > Profile > Change Password. Enter your current
+                password and new password, then confirm the change.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="account">
+            <div class="faq-question">
+              <h3 data-i18n="faq12Question">Can I delete my account?</h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq12Answer">
+                Yes, you can delete your account in Settings > Profile > Danger
+                Zone > Delete Account. This action is permanent and cannot be
+                undone.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="account">
+            <div class="faq-question">
+              <h3 data-i18n="faq13Question">How do I export my data?</h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq13Answer">
+                Go to Settings > Data Management > Export Data. You can export
+                your transactions as a CSV file for backup or analysis.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item" data-category="account">
+            <div class="faq-question">
+              <h3 data-i18n="faq14Question">Is my data secure?</h3>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <p data-i18n="faq14Answer">
+                Yes, we use industry-standard encryption to protect your data
+                both in transit and at rest. Your financial information is never
+                shared with third parties without your explicit consent.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-contact">
+          <h3 data-i18n="stillHaveQuestions">Still have questions?</h3>
+          <p data-i18n="contactSupport">
+            If you can't find the answer you're looking for, our support team is
+            here to help.
+          </p>
+          <a
+            href="mailto:support@expensemanager.app"
+            class="contact-btn"
+            data-i18n="contactUs"
+            >Contact Support</a
+          >
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <img
+                src="assets/images/logo.png"
+                alt="Expense Manager"
+                class="logo"
+              />
+              <span class="logo-text" data-i18n="appTitle"
+                >Expense Manager</span
+              >
+            </div>
+            <p class="footer-description" data-i18n="footerDescription">
+              Your personal finance management solution for a better financial
+              future.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4 class="footer-title" data-i18n="footerQuickLinks">
+              Quick Links
+            </h4>
+            <ul class="footer-links">
+              <li>
+                <a href="index.html#features" data-i18n="navFeatures"
+                  >Features</a
+                >
+              </li>
+              <li>
+                <a href="index.html#download" data-i18n="navDownload"
+                  >Download</a
+                >
+              </li>
+              <li><a href="faq.html" data-i18n="navFaq">FAQ</a></li>
+              <li><a href="terms.html" data-i18n="navTerms">Terms</a></li>
+              <li><a href="privacy.html" data-i18n="navPrivacy">Privacy</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4 class="footer-title" data-i18n="footerSupport">Support</h4>
+            <ul class="footer-links">
+              <li>
+                <a
+                  href="mailto:support@expensemanager.app"
+                  data-i18n="footerEmail"
+                  >support@expensemanager.app</a
+                >
+              </li>
+              <li>
+                <a
+                  href="mailto:privacy@expensemanager.app"
+                  data-i18n="footerPrivacyEmail"
+                  >privacy@expensemanager.app</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4 class="footer-title" data-i18n="footerFollow">Follow Us</h4>
+            <div class="social-links">
+              <a href="#" class="social-link" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" aria-label="Facebook">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="#" class="social-link" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copyright" data-i18n="footerCopyright">
+            © 2024 Expense Manager. All rights reserved.
+          </p>
+          <div class="footer-legal">
+            <a href="terms.html" data-i18n="footerTerms">Terms of Service</a>
+            <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/faq.js"></script>
+  </body>
+</html>
