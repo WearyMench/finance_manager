@@ -139,8 +139,8 @@
   
   "contactUs": "10. Contact Us",
   "contactUsContent": "If you have any questions about this privacy policy or our data practices, please contact us at:",
-  "contactEmail": "Email: privacy@expensemanager.app",
-  "contactWebsite": "Website: https://expensemanager.app/privacy",
+  "contactEmail": "Email: support@c4rib3.com",
+  "contactWebsite": "Website: https://expenses.c4rib3.com/",
   
   "lastUpdated": "Last updated: December 2024",
   "withYourConsent": "With your explicit consent:",
@@ -226,9 +226,9 @@
   "contactApp1": "Use the help and support section",
   "contactApp2": "Send us a message through the app",
   "throughEmail": "Through email:",
-  "contactEmail1": "General inquiries: support@expensemanager.app",
-  "contactEmail2": "Privacy concerns: privacy@expensemanager.app",
-  "contactEmail3": "Data protection officer: dpo@expensemanager.app",
+  "contactEmail1": "General inquiries: support@c4rib3.com",
+  "contactEmail2": "Privacy concerns: support@c4rib3.com",
+  "contactEmail3": "Data protection officer: support@c4rib3.com",
   "throughWebsite": "Through our website:",
   "contactWeb1": "Visit our contact page",
   "contactWeb2": "Use our online form",
@@ -284,8 +284,8 @@
   
   "contact": "9. Contact Information",
   "contactContent": "If you have any questions about these terms, please contact us:",
-  "contactMethod1": "Email: support@expensemanager.app",
-  "contactMethod2": "Website: https://expensemanager.app/terms",
+  "contactMethod1": "Email: support@c4rib3.com",
+  "contactMethod2": "Website: https://expenses.c4rib3.com/",
   
   "termsConfirmation": "By using this application, you confirm that you have read, understood, and agree to these terms and conditions.",
   
@@ -307,8 +307,8 @@
   "footerQuickLinks": "Quick Links",
   "footerSupport": "Support",
   "footerFollow": "Follow Us",
-  "footerEmail": "support@expensemanager.app",
-  "footerPrivacyEmail": "privacy@expensemanager.app",
+  "footerEmail": "support@c4rib3.com",
+  "footerPrivacyEmail": "support@c4rib3.com",
   "footerCopyright": "© 2024 Expense Manager. All rights reserved.",
   "footerTerms": "Terms of Service",
   "footerPrivacy": "Privacy Policy",
