@@ -11,6 +11,44 @@
   font-display: swap;
 }
 
+/* Prevent layout shift */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.phone-mockup {
+  width: 300px;
+  height: 600px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.app-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.screenshot-img {
+  width: 300px;
+  height: 600px;
+  object-fit: contain;
+  display: block;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.play-badge {
+  width: 200px;
+  height: 60px;
+  object-fit: contain;
+}
+
 :root {
   /* Colors */
   --primary-color: #059669;
