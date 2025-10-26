@@ -53,6 +53,13 @@
   .download-info {
     flex-direction: column;
     gap: var(--spacing-4);
+    align-items: center;
+    text-align: center;
+  }
+
+  .info-item {
+    justify-content: center;
+    text-align: center;
   }
 
   .support-grid {
@@ -62,6 +69,17 @@
 
   .footer-content {
     grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-4);
+  }
+
+  .footer-section {
     text-align: center;
   }
 

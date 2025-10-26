@@ -509,6 +509,9 @@ body {
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
 }
 
 .screenshot-item:hover {
@@ -517,11 +520,12 @@ body {
 }
 
 .screenshot-img {
-  width: 100%;
-  max-width: 200px;
-  height: auto;
+  width: 300px;
+  height: 600px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto var(--spacing-4);
   border-radius: var(--radius-lg);
-  margin-bottom: var(--spacing-4);
 }
 
 .screenshot-title {

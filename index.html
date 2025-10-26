@@ -193,11 +193,16 @@
     <link rel="preload" href="assets/css/style.css" as="style" />
     <link rel="preload" href="assets/images/app-preview.png" as="image" />
     <link rel="preload" href="assets/images/logo.png" as="image" />
+    <link rel="preload" href="assets/js/i18n.js" as="script" />
+    <link rel="preload" href="assets/js/main.js" as="script" />
+    <link rel="preload" href="assets/i18n/en.json" as="fetch" crossorigin />
 
-    <!-- DNS prefetch for external resources -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+
+    <!-- DNS prefetch for non-critical resources -->
     <link rel="dns-prefetch" href="//play.google.com" />
 
     <!-- Schema.org Structured Data -->
@@ -772,42 +777,58 @@
       });
     </script>
 
-    <!-- Load non-critical resources asynchronously -->
+    <!-- Load non-critical resources after page load to reduce critical path -->
     <script>
-      // Load responsive CSS
-      const responsiveCSS = document.createElement("link");
-      responsiveCSS.rel = "stylesheet";
-      responsiveCSS.href = "assets/css/responsive.css";
-      document.head.appendChild(responsiveCSS);
+      // Defer non-critical resources until after page load
+      window.addEventListener("load", function () {
+        // Load responsive CSS
+        const responsiveCSS = document.createElement("link");
+        responsiveCSS.rel = "stylesheet";
+        responsiveCSS.href = "assets/css/responsive.css";
+        document.head.appendChild(responsiveCSS);
 
-      // Load Google Fonts with font-display: swap
-      const googleFonts = document.createElement("link");
-      googleFonts.rel = "stylesheet";
-      googleFonts.href =
-        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap";
-      document.head.appendChild(googleFonts);
+        // Load Google Fonts with font-display: swap
+        const googleFonts = document.createElement("link");
+        googleFonts.rel = "stylesheet";
+        googleFonts.href =
+          "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap";
+        document.head.appendChild(googleFonts);
 
-      // Load Font Awesome with font-display optimization
-      const fontAwesome = document.createElement("link");
-      fontAwesome.rel = "stylesheet";
-      fontAwesome.href =
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
-      fontAwesome.onload = function () {
-        // Add font-display: swap to Font Awesome fonts after load
-        const style = document.createElement("style");
-        style.textContent = `
-           @font-face {
-             font-family: 'Font Awesome 6 Free';
-             font-display: swap;
-           }
-           @font-face {
-             font-family: 'Font Awesome 6 Brands';
-             font-display: swap;
-           }
-         `;
-        document.head.appendChild(style);
-      };
-      document.head.appendChild(fontAwesome);
+        // Load Font Awesome with font-display optimization
+        const fontAwesome = document.createElement("link");
+        fontAwesome.rel = "stylesheet";
+        fontAwesome.href =
+          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+        fontAwesome.onload = function () {
+          // Override Font Awesome fonts with font-display: optional
+          const style = document.createElement("style");
+          style.textContent = `
+             @font-face {
+               font-family: 'Font Awesome 6 Free';
+               font-style: normal;
+               font-weight: 900;
+               font-display: optional;
+               src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2') format('woff2');
+             }
+             @font-face {
+               font-family: 'Font Awesome 6 Brands';
+               font-style: normal;
+               font-weight: 400;
+               font-display: optional;
+               src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2') format('woff2');
+             }
+             @font-face {
+               font-family: 'Font Awesome 6 Free';
+               font-style: normal;
+               font-weight: 400;
+               font-display: optional;
+               src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-regular-400.woff2') format('woff2');
+             }
+           `;
+          document.head.appendChild(style);
+        };
+        document.head.appendChild(fontAwesome);
+      });
     </script>
   </body>
 </html>
