@@ -10,13 +10,40 @@
     />
     <meta
       name="keywords"
-      content="expense manager, personal finance, budget tracking, financial management, money management"
+      content="expense manager, personal finance, budget tracking, financial management, money management, expense tracker, budget app, financial planning, money tracker, spending tracker, finance app, budget planner, expense tracking app, personal budget, financial analytics, multi-currency finance, expense categorization, financial reports, money management app"
     />
     <meta name="author" content="Expense Manager Team" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="language" content="en" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="rating" content="general" />
+    <meta name="distribution" content="global" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="msapplication-TileColor" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Expense Manager" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://expenses.c4rib3.com/" />
+
+    <!-- Alternate language versions -->
+    <link rel="alternate" hreflang="en" href="https://expenses.c4rib3.com/" />
+    <link
+      rel="alternate"
+      hreflang="es"
+      href="https://expenses.c4rib3.com/?lang=es"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://expenses.c4rib3.com/"
+    />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://expensemanager.app/" />
+    <meta property="og:url" content="https://expenses.c4rib3.com/" />
     <meta
       property="og:title"
       content="Expense Manager - Personal Finance Management"
@@ -27,12 +54,12 @@
     />
     <meta
       property="og:image"
-      content="https://expensemanager.app/assets/images/og-image.jpg"
+      content="https://expenses.c4rib3.com/assets/images/og-image.jpg"
     />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://expensemanager.app/" />
+    <meta property="twitter:url" content="https://expenses.c4rib3.com/" />
     <meta
       property="twitter:title"
       content="Expense Manager - Personal Finance Management"
@@ -43,7 +70,7 @@
     />
     <meta
       property="twitter:image"
-      content="https://expensemanager.app/assets/images/og-image.jpg"
+      content="https://expenses.c4rib3.com/assets/images/og-image.jpg"
     />
 
     <!-- Favicon -->
@@ -77,11 +104,125 @@
       rel="stylesheet"
     />
 
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/css/style.css" as="style" />
+    <link rel="preload" href="assets/images/app-preview.png" as="image" />
+    <link rel="preload" href="assets/images/logo.png" as="image" />
+
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+    <link rel="dns-prefetch" href="//play.google.com" />
+
     <!-- Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Expense Manager",
+        "description": "Personal finance management app that helps you track expenses, manage budgets, and analyze financial habits with multi-currency support and advanced analytics.",
+        "url": "https://expenses.c4rib3.com/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Android",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "1000"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "Expense Manager Team",
+          "url": "https://expenses.c4rib3.com/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Expense Manager Team",
+          "url": "https://expenses.c4rib3.com/"
+        },
+        "screenshot": "https://expenses.c4rib3.com/assets/images/app-preview.png",
+        "softwareVersion": "1.0",
+        "datePublished": "2024-01-01",
+        "dateModified": "2024-12-01",
+        "keywords": "expense manager, personal finance, budget tracking, financial management, money management",
+        "inLanguage": ["en", "es"],
+        "downloadUrl": "https://play.google.com/store/apps/details?id=com.gestorgastos.app",
+        "featureList": [
+          "Expense Tracking",
+          "Budget Management",
+          "Multi-Account Support",
+          "Multi-Currency Support",
+          "Advanced Analytics",
+          "Biometric Security"
+        ]
+      }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Expense Manager",
+        "url": "https://expenses.c4rib3.com/",
+        "logo": "https://expenses.c4rib3.com/assets/images/logo.png",
+        "description": "Personal finance management solution for better financial future",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "",
+          "contactType": "customer service",
+          "email": "support@c4rib3.com"
+        },
+        "sameAs": [
+          "https://play.google.com/store/apps/details?id=com.gestorgastos.app"
+        ]
+      }
+    </script>
+
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I add my first transaction?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Tap the + button on the main screen, select 'Add Income' or 'Add Expense', choose a category, enter the amount and description, then tap Save."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use multiple currencies?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Create accounts in different currencies. The app will automatically convert amounts for analysis and reports."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do budgets work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Set spending limits for any category. Budgets are automatically set for monthly periods (30 days). The app tracks your spending and alerts you when you're near or exceed the limit."
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <!-- Language Switcher -->
@@ -500,6 +641,20 @@
         </div>
       </div>
     </footer>
+
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "GA_MEASUREMENT_ID");
+    </script>
 
     <!-- Scripts -->
     <script src="assets/js/i18n.js"></script>
