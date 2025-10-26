@@ -33,15 +33,11 @@ class I18n {
       }
 
       this.translations = await response.json();
-      console.log(
-        `Translations loaded successfully for ${this.currentLanguage}`
-      );
       this.updatePageContent();
     } catch (error) {
       console.error("Error loading translations:", error);
       // Fallback to English if current language fails
       if (this.currentLanguage !== "en") {
-        console.log("Falling back to English translations");
         this.currentLanguage = "en";
         this.loadTranslations();
       }
@@ -50,7 +46,6 @@ class I18n {
 
   updatePageContent() {
     const elements = document.querySelectorAll("[data-i18n]");
-    console.log(`Found ${elements.length} elements with data-i18n attributes`);
 
     let translatedCount = 0;
     elements.forEach((element) => {
@@ -67,8 +62,6 @@ class I18n {
         console.warn(`Translation not found for key: ${key}`);
       }
     });
-
-    console.log(`Successfully translated ${translatedCount} elements`);
 
     // Update page title and meta description
     document.title = this.getTranslation("pageTitle") || "Expense Manager";

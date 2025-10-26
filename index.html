@@ -21,7 +21,7 @@
     <meta name="distribution" content="global" />
     <meta name="theme-color" content="#2563eb" />
     <meta name="msapplication-TileColor" content="#2563eb" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Expense Manager" />
 
@@ -92,17 +92,84 @@
       href="assets/images/apple-touch-icon.png"
     />
 
+    <!-- Critical CSS inline -->
+    <style>
+      /* Critical styles for above-the-fold content */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        z-index: 1000;
+      }
+      .hero {
+        padding: 120px 0 80px;
+        background: #f8fafc;
+      }
+      .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+      }
+      .hero-subtitle {
+        font-size: 1.25rem;
+        color: #475569;
+        margin-bottom: 2rem;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .btn-primary {
+        background: #059669;
+        color: white;
+      }
+      .btn-secondary {
+        background: transparent;
+        color: #059669;
+        border: 2px solid #059669;
+      }
+
+      /* Font display optimization */
+      @font-face {
+        font-family: "Font Awesome 6 Free";
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Font Awesome 6 Brands";
+        font-display: swap;
+      }
+
+      /* Prevent layout shift during font loading */
+      .fas,
+      .fab,
+      .far,
+      .fal,
+      .fad {
+        font-display: swap;
+      }
+    </style>
+
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/responsive.css" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
 
     <!-- Preload critical resources -->
     <link rel="preload" href="assets/css/style.css" as="style" />
@@ -114,12 +181,6 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
     <link rel="dns-prefetch" href="//play.google.com" />
-
-    <!-- Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
@@ -239,6 +300,8 @@
             src="assets/images/logo.png"
             alt="Expense Manager"
             class="logo"
+            width="40"
+            height="40"
           />
           <span class="logo-text" data-i18n="appTitle">Expense Manager</span>
         </div>
@@ -304,6 +367,8 @@
               src="assets/images/app-preview.png"
               alt="Expense Manager App Preview"
               class="app-preview"
+              width="300"
+              height="600"
             />
           </div>
         </div>
@@ -429,6 +494,8 @@
                 src="assets/images/screenshot-1.png"
                 alt="Dashboard"
                 class="screenshot-img"
+                width="300"
+                height="600"
               />
               <h3 class="screenshot-title" data-i18n="screenshotDashboard">
                 Dashboard
@@ -439,6 +506,8 @@
                 src="assets/images/screenshot-2.png"
                 alt="Transactions"
                 class="screenshot-img"
+                width="300"
+                height="600"
               />
               <h3 class="screenshot-title" data-i18n="screenshotTransactions">
                 Transactions
@@ -449,6 +518,8 @@
                 src="assets/images/screenshot-3.png"
                 alt="Analytics"
                 class="screenshot-img"
+                width="300"
+                height="600"
               />
               <h3 class="screenshot-title" data-i18n="screenshotAnalytics">
                 Analytics
@@ -459,6 +530,8 @@
                 src="assets/images/screenshot-4.png"
                 alt="Budgets"
                 class="screenshot-img"
+                width="300"
+                height="600"
               />
               <h3 class="screenshot-title" data-i18n="screenshotBudgets">
                 Budgets
@@ -489,6 +562,8 @@
                   src="assets/images/google-play-badge.png"
                   alt="Get it on Google Play"
                   class="play-badge"
+                  width="200"
+                  height="60"
                 />
               </a>
             </div>
@@ -595,6 +670,8 @@
                 src="assets/images/logo.png"
                 alt="Expense Manager"
                 class="logo"
+                width="40"
+                height="40"
               />
               <span class="logo-text" data-i18n="appTitle"
                 >Expense Manager</span
@@ -657,5 +734,43 @@
     <!-- Scripts -->
     <script src="assets/js/i18n.js"></script>
     <script src="assets/js/main.js"></script>
+
+    <!-- Load non-critical resources asynchronously -->
+    <script>
+      // Load responsive CSS
+      const responsiveCSS = document.createElement("link");
+      responsiveCSS.rel = "stylesheet";
+      responsiveCSS.href = "assets/css/responsive.css";
+      document.head.appendChild(responsiveCSS);
+
+      // Load Google Fonts with font-display: swap
+      const googleFonts = document.createElement("link");
+      googleFonts.rel = "stylesheet";
+      googleFonts.href =
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap";
+      document.head.appendChild(googleFonts);
+
+      // Load Font Awesome with font-display optimization
+      const fontAwesome = document.createElement("link");
+      fontAwesome.rel = "stylesheet";
+      fontAwesome.href =
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+      fontAwesome.onload = function () {
+        // Add font-display: swap to Font Awesome fonts after load
+        const style = document.createElement("style");
+        style.textContent = `
+           @font-face {
+             font-family: 'Font Awesome 6 Free';
+             font-display: swap;
+           }
+           @font-face {
+             font-family: 'Font Awesome 6 Brands';
+             font-display: swap;
+           }
+         `;
+        document.head.appendChild(style);
+      };
+      document.head.appendChild(fontAwesome);
+    </script>
   </body>
 </html>

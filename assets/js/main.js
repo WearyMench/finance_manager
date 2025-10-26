@@ -188,7 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Measure page load time
     const loadTime =
       performance.timing.loadEventEnd - performance.timing.navigationStart;
-    console.log("Page load time:", loadTime + "ms");
 
     // Track page load time
     if (typeof gtag !== "undefined") {
@@ -205,10 +204,10 @@ document.addEventListener("DOMContentLoaded", function () {
       navigator.serviceWorker
         .register("/sw.js")
         .then(function (registration) {
-          console.log("ServiceWorker registration successful");
+          // ServiceWorker registered successfully
         })
         .catch(function (err) {
-          console.log("ServiceWorker registration failed");
+          // ServiceWorker registration failed - this is expected if sw.js doesn't exist
         });
     });
   }
