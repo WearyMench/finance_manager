@@ -309,12 +309,6 @@
     </script>
   </head>
   <body>
-    <!-- Language Switcher -->
-    <div class="language-switcher">
-      <button id="lang-en" class="lang-btn active" data-lang="en">EN</button>
-      <button id="lang-es" class="lang-btn" data-lang="es">ES</button>
-    </div>
-
     <!-- Navigation -->
     <nav class="navbar">
       <div class="nav-container">
@@ -746,9 +740,56 @@
           <p class="footer-copyright" data-i18n="footerCopyright">
             © 2024 Expense Manager. All rights reserved.
           </p>
-          <div class="footer-legal">
-            <a href="terms.html" data-i18n="footerTerms">Terms of Service</a>
-            <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a>
+          <div class="footer-bottom-right">
+            <!-- Language Switcher -->
+            <div class="language-switcher footer-lang-switcher">
+              <button
+                id="lang-en"
+                class="lang-btn active"
+                data-lang="en"
+                aria-label="English"
+              >
+                EN
+              </button>
+              <button
+                id="lang-es"
+                class="lang-btn"
+                data-lang="es"
+                aria-label="Español"
+              >
+                ES
+              </button>
+              <button
+                id="lang-pt-BR"
+                class="lang-btn"
+                data-lang="pt-BR"
+                aria-label="Português"
+              >
+                PT
+              </button>
+              <button
+                id="lang-fr"
+                class="lang-btn"
+                data-lang="fr"
+                aria-label="Français"
+              >
+                FR
+              </button>
+              <button
+                id="lang-de"
+                class="lang-btn"
+                data-lang="de"
+                aria-label="Deutsch"
+              >
+                DE
+              </button>
+            </div>
+            <div class="footer-legal">
+              <a href="terms.html" data-i18n="footerTerms">Terms of Service</a>
+              <a href="privacy.html" data-i18n="footerPrivacy"
+                >Privacy Policy</a
+              >
+            </div>
           </div>
         </div>
       </div>

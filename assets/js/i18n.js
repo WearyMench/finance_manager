@@ -15,6 +15,19 @@ class I18n {
 
     // Check browser language
     const browserLang = navigator.language || navigator.userLanguage;
+    // Check for Portuguese (pt-BR or pt)
+    if (browserLang.startsWith("pt")) {
+      return "pt-BR";
+    }
+    // Check for French
+    if (browserLang.startsWith("fr")) {
+      return "fr";
+    }
+    // Check for German
+    if (browserLang.startsWith("de")) {
+      return "de";
+    }
+    // Check for Spanish
     if (browserLang.startsWith("es")) {
       return "es";
     }

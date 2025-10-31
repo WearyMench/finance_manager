@@ -152,28 +152,36 @@ body {
 
 /* Language Switcher */
 .language-switcher {
-  position: fixed;
-  top: var(--spacing-4);
-  right: var(--spacing-4);
-  z-index: 1000;
   display: flex;
-  background: var(--surface-color);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-1);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
+  gap: var(--spacing-1);
+  align-items: center;
+}
+
+/* Language Switcher in Footer */
+.footer-lang-switcher {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .lang-btn {
   background: none;
   border: none;
-  padding: var(--spacing-2) var(--spacing-3);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 32px;
+  text-align: center;
+}
+
+.footer-lang-switcher .lang-btn {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
 }
 
 .lang-btn.active {
@@ -764,6 +772,13 @@ body {
 .footer-copyright {
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
+}
+
+.footer-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-6);
+  flex-wrap: wrap;
 }
 
 .footer-legal {
