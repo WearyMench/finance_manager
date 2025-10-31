@@ -27,6 +27,14 @@ class I18n {
     if (browserLang.startsWith("de")) {
       return "de";
     }
+    // Check for Korean
+    if (browserLang.startsWith("ko")) {
+      return "ko";
+    }
+    // Check for Japanese
+    if (browserLang.startsWith("ja")) {
+      return "ja";
+    }
     // Check for Spanish
     if (browserLang.startsWith("es")) {
       return "es";
