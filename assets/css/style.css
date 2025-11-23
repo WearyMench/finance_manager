@@ -153,8 +153,10 @@ body {
 /* Language Switcher */
 .language-switcher {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-1);
   align-items: center;
+  justify-content: flex-start;
 }
 
 /* Language Switcher in Footer */
@@ -163,6 +165,8 @@ body {
   border: none;
   box-shadow: none;
   padding: 0;
+  max-width: 100%;
+  justify-content: center;
 }
 
 .lang-btn {
@@ -176,7 +180,12 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 32px;
+  max-width: 60px;
   text-align: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .footer-lang-switcher .lang-btn {

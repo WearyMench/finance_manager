@@ -101,6 +101,26 @@
     gap: var(--spacing-2);
   }
 
+  .footer-lang-switcher {
+    justify-content: center;
+    gap: 3px;
+    max-width: 100%;
+  }
+
+  .footer-lang-switcher .lang-btn {
+    font-size: 9px;
+    padding: 3px 5px;
+    min-width: 26px;
+    max-width: 50px;
+  }
+
+  /* For Chinese and other longer text buttons */
+  .footer-lang-switcher .lang-btn[id*="zh-CN"] {
+    font-size: 8px;
+    padding: 3px 4px;
+    max-width: 45px;
+  }
+
   .nav-menu {
     position: fixed;
     top: 70px;
@@ -139,6 +159,15 @@
 
 /* Mobile (481px - 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
+  .footer-lang-switcher {
+    justify-content: center;
+    gap: var(--spacing-1);
+  }
+
+  .footer-lang-switcher .lang-btn {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
   .hero-container {
     grid-template-columns: 1fr;
     gap: var(--spacing-12);
@@ -219,6 +248,16 @@
   .nav-toggle {
     display: none;
   }
+
+  .footer-lang-switcher {
+    justify-content: center;
+    gap: var(--spacing-1);
+  }
+
+  .footer-lang-switcher .lang-btn {
+    font-size: var(--font-size-xs);
+    padding: 6px 10px;
+  }
 }
 
 /* Desktop (1025px and up) */
@@ -254,6 +293,17 @@
 
   .nav-toggle {
     display: none;
+  }
+
+  .footer-lang-switcher {
+    justify-content: center;
+    gap: var(--spacing-1);
+    flex-wrap: wrap;
+  }
+
+  .footer-lang-switcher .lang-btn {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1) var(--spacing-2);
   }
 }
 

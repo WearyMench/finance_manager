@@ -39,6 +39,26 @@ class I18n {
     if (browserLang.startsWith("es")) {
       return "es";
     }
+    // Check for Chinese (Simplified)
+    if (browserLang.startsWith("zh-CN") || browserLang.startsWith("zh")) {
+      return "zh-CN";
+    }
+    // Check for Italian
+    if (browserLang.startsWith("it")) {
+      return "it";
+    }
+    // Check for Russian
+    if (browserLang.startsWith("ru")) {
+      return "ru";
+    }
+    // Check for Arabic
+    if (browserLang.startsWith("ar")) {
+      return "ar";
+    }
+    // Check for Hindi
+    if (browserLang.startsWith("hi")) {
+      return "hi";
+    }
 
     // Default to English
     return "en";
