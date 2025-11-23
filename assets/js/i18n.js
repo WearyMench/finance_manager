@@ -66,7 +66,6 @@ class I18n {
 
   async loadTranslations() {
     try {
-      console.log(`Loading translations for language: ${this.currentLanguage}`);
       const response = await fetch(`assets/i18n/${this.currentLanguage}.json`);
 
       if (!response.ok) {
