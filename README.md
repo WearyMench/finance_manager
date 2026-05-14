@@ -1,6 +1,6 @@
-# Expense Manager - Landing Page
+# Trazza: Expense Manager – Landing Page
 
-A modern, responsive landing page for the Expense Manager mobile application. This website serves as the official web presence for the app, providing information about features, screenshots, download links, and legal documentation required for Google Play Store verification.
+A modern, responsive landing page for the Trazza: Expense Manager mobile application. This website serves as the official web presence for the app, providing information about features, screenshots, download links, and legal documentation required for Google Play Store verification.
 
 ## Features
 
@@ -147,4 +147,4 @@ For technical support or questions about this landing page, contact:
 
 ## License
 
-This landing page is part of the Expense Manager project. All rights reserved.
+This landing page is part of the Trazza (Expense Manager) project. All rights reserved.

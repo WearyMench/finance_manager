@@ -104,12 +104,13 @@ class I18n {
     });
 
     // Update page title and meta description
-    document.title = this.getTranslation("pageTitle") || "Expense Manager";
+    document.title =
+      this.getTranslation("pageTitle") || "Trazza: Expense Manager";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.content =
         this.getTranslation("pageDescription") ||
-        "Personal Finance Management App";
+        "Trazza: Expense Manager — personal finance, budgets, and expense tracking.";
     }
   }
 
